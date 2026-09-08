@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { MarkGithubIcon } from "@primer/octicons-react";
 import {
-  ArrowRight,
   ArrowUpRight,
   Command,
   FileDown,
@@ -62,7 +61,7 @@ export default function LandingPage() {
     <main className={styles.page}>
       <header className={styles.navWrap}>
         <nav className={styles.nav} aria-label="Landing navigation">
-          <Link href="/landing" className={styles.brand}>
+          <Link href="/" className={styles.brand}>
             <BrandMark />
             <span>Notation</span>
           </Link>
@@ -72,7 +71,6 @@ export default function LandingPage() {
             <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
           </div>
           <div className={styles.navActions}>
-            <Link href="/" className={styles.openApp}>Open app</Link>
             <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.navCta}>
               <MarkGithubIcon size={15} aria-hidden="true" />
               <span>Get it</span>
@@ -101,10 +99,6 @@ export default function LandingPage() {
               <span>Get it now on GitHub</span>
               <ArrowUpRight size={16} />
             </a>
-            <Link href="/" className={styles.secondaryCta}>
-              <span>Open the app</span>
-              <ArrowRight size={16} />
-            </Link>
           </div>
         </motion.div>
 
@@ -228,10 +222,9 @@ export default function LandingPage() {
       </section>
 
       <footer className={styles.footer}>
-        <Link href="/landing" className={styles.brand}><BrandMark /><span>Notation</span></Link>
+        <Link href="/" className={styles.brand}><BrandMark /><span>Notation</span></Link>
         <p>Built for notes, not dashboards.</p>
         <div>
-          <Link href="/">Open app</Link>
           <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </footer>
