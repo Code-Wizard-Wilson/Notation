@@ -7,7 +7,15 @@ const pixel = Buffer.from(
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(async () => {
+    localStorage.clear();
+    await new Promise<void>((resolve) => {
+      const request = indexedDB.deleteDatabase("notation-local");
+      request.onsuccess = () => resolve();
+      request.onerror = () => resolve();
+      request.onblocked = () => resolve();
+    });
+  });
   await page.reload();
   await expect(page.locator(".workspace-shell")).toBeVisible();
 });
@@ -285,11 +293,17 @@ test("imports Obsidian-style Markdown notes", async ({ page }) => {
 
 test("opening a note does not touch its updated time or re-sort it", async ({ page }) => {
   const readTimestamp = async (title: string) =>
-    page.evaluate((targetTitle) => {
-      const notes = JSON.parse(localStorage.getItem("notation.local-notes.v1") ?? "[]") as Array<{
-        title: string;
-        updatedAt: string;
-      }>;
+    page.evaluate(async (targetTitle) => {
+      const notes = await new Promise<Array<{ title: string; updatedAt: string }>>((resolve) => {
+        const open = indexedDB.open("notation-local", 1);
+        open.onsuccess = () => {
+          const db = open.result;
+          const request = db.transaction("workspace", "readonly").objectStore("workspace").get("notes");
+          request.onsuccess = () => { resolve(request.result ?? []); db.close(); };
+          request.onerror = () => { resolve([]); db.close(); };
+        };
+        open.onerror = () => resolve([]);
+      });
       return notes.find((note) => note.title === targetTitle)?.updatedAt ?? null;
     }, title);
 
@@ -398,9 +412,17 @@ test("inserts and edits a native table", async ({ page }) => {
 });
 
 test("turns dense soft-break rows into independent draggable blocks", async ({ page }) => {
-  const originalUpdatedAt = await page.evaluate(() => {
-    const key = "notation.local-notes.v1";
-    const notes = JSON.parse(localStorage.getItem(key) ?? "[]");
+  const originalUpdatedAt = await page.evaluate(async () => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const open = indexedDB.open("notation-local", 1);
+      open.onsuccess = () => resolve(open.result);
+      open.onerror = () => reject(open.error);
+    });
+    const notes = await new Promise<any[]>((resolve) => {
+      const request = db.transaction("workspace", "readonly").objectStore("workspace").get("notes");
+      request.onsuccess = () => resolve(request.result ?? []);
+      request.onerror = () => resolve([]);
+    });
     const target = notes[0];
     target.title = "Dense rows";
     target.plainTextContent = "nuisance\nintersection\nidentical\nideology";
@@ -421,7 +443,13 @@ test("turns dense soft-break rows into independent draggable blocks", async ({ p
         },
       ],
     };
-    localStorage.setItem(key, JSON.stringify(notes));
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction("workspace", "readwrite");
+      transaction.objectStore("workspace").put(notes, "notes");
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+    });
+    db.close();
     return target.updatedAt;
   });
 
@@ -449,9 +477,18 @@ test("turns dense soft-break rows into independent draggable blocks", async ({ p
   expect(handleBox).not.toBeNull();
   expect(Math.abs((handleBox!.y + handleBox!.height / 2) - (rowBox!.y + rowBox!.height / 2))).toBeLessThan(10);
 
-  const persistedUpdatedAt = await page.evaluate(() => {
-    const notes = JSON.parse(localStorage.getItem("notation.local-notes.v1") ?? "[]");
-    return notes.find((note: { title?: string }) => note.title === "Dense rows")?.updatedAt;
+  const persistedUpdatedAt = await page.evaluate(async () => {
+    const notes = await new Promise<Array<{ title?: string; updatedAt?: string }>>((resolve) => {
+      const open = indexedDB.open("notation-local", 1);
+      open.onsuccess = () => {
+        const db = open.result;
+        const request = db.transaction("workspace", "readonly").objectStore("workspace").get("notes");
+        request.onsuccess = () => { resolve(request.result ?? []); db.close(); };
+        request.onerror = () => { resolve([]); db.close(); };
+      };
+      open.onerror = () => resolve([]);
+    });
+    return notes.find((note) => note.title === "Dense rows")?.updatedAt;
   });
   expect(persistedUpdatedAt).toBe(originalUpdatedAt);
 });

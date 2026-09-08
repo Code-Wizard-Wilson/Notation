@@ -2,10 +2,8 @@
 
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
-import { Archive, FileUp, LogOut, Minus, Plus, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Archive, FileUp, HardDrive, Minus, Plus, Trash2 } from "lucide-react";
 import { Drawer } from "@/components/interior/drawer";
-import { createClient } from "@/lib/supabase/client";
 import { useWorkspaceStore } from "@/store/workspace-store";
 import { useSettingsStore, type EditorFontFamily } from "@/store/settings-store";
 import { UI_MOTION } from "@/lib/motion";
@@ -27,11 +25,8 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (val
 }
 
 export function SettingsSheet() {
-  const router = useRouter();
   const open = useWorkspaceStore((state) => state.settingsOpen);
   const setOpen = useWorkspaceStore((state) => state.setSettingsOpen);
-  const localMode = useWorkspaceStore((state) => state.localMode);
-  const user = useWorkspaceStore((state) => state.user);
   const archivedCount = useWorkspaceStore((state) => state.notes.filter((note) => note.isArchived && !note.isDeleted).length);
   const trashCount = useWorkspaceStore((state) => state.notes.filter((note) => note.isDeleted).length);
   const setView = useWorkspaceStore((state) => state.setView);
@@ -55,14 +50,6 @@ export function SettingsSheet() {
       setImportingMarkdown(false);
       if (importInputRef.current) importInputRef.current.value = "";
     }
-  }
-
-  async function logout() {
-    if (!localMode) {
-      await createClient().auth.signOut();
-      router.refresh();
-    }
-    setOpen(false);
   }
 
   return (
@@ -178,14 +165,13 @@ export function SettingsSheet() {
         </section>
 
         <section className="settings-section account-settings">
-          <p className="settings-label">ACCOUNT</p>
+          <p className="settings-label">STORAGE</p>
           <div className="setting-row">
-            <span>
-              <strong>{localMode ? "Local preview" : user?.email}</strong>
-              <small>{localMode ? "Add Supabase credentials for cloud sync" : "Your notes sync privately through Supabase"}</small>
+            <span className="local-storage-copy">
+              <strong><HardDrive size={15} /> On this device</strong>
+              <small>Notes and attachments stay in this browser. Nothing is sent to a server.</small>
             </span>
           </div>
-          {!localMode && <button type="button" className="logout-button" onClick={logout}><LogOut size={15} /> Log out</button>}
         </section>
       </div>
     </Drawer>

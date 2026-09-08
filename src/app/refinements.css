@@ -2011,7 +2011,7 @@ button:active:not(:disabled) {
   height: 20px !important;
   border: 0 !important;
   border-radius: 6px !important;
-  background: url('/icon.svg') center / contain no-repeat !important;
+  background: var(--notation-icon-image) center / contain no-repeat !important;
 }
 
 .workspace-favicon::after {

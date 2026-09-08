@@ -28,7 +28,7 @@ export type Note = {
   updatedAt: string;
   deletedAt: string | null;
   attachments: Attachment[];
-  syncState?: "idle" | "saving" | "saved" | "error" | "offline";
+  syncState?: "idle" | "saving" | "saved" | "error";
 };
 
 export type NotesView = "all" | "pinned" | "archive" | "trash";

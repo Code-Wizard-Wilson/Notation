@@ -15,7 +15,7 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "npm run start -- -p 3210",
+    command: "npm run build && python3 -m http.server 3210 -d out",
     url: "http://127.0.0.1:3210",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

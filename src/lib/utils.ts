@@ -1,9 +1,5 @@
 import type { JSONContent } from "@tiptap/core";
-import type { Attachment, Note } from "@/types/note";
-import type { Database, Json } from "@/types/database";
-
-type NoteRow = Database["public"]["Tables"]["notes"]["Row"];
-type AttachmentRow = Database["public"]["Tables"]["attachments"]["Row"];
+import type { Note } from "@/types/note";
 
 export function cn(...values: Array<string | false | null | undefined>) {
   return values.filter(Boolean).join(" ");
@@ -53,70 +49,6 @@ export function getNoteDisplayTitle(note: Pick<Note, "title">) {
 
 export function getNotePreview(note: Pick<Note, "plainTextContent">) {
   return note.plainTextContent.trim().replace(/\s+/g, " ") || "Start writing…";
-}
-
-export function mapAttachment(row: AttachmentRow): Attachment {
-  return {
-    id: row.id,
-    noteId: row.note_id,
-    userId: row.user_id,
-    type: row.type,
-    filename: row.filename,
-    storagePath: row.storage_path,
-    mimeType: row.mime_type,
-    size: row.size,
-    createdAt: row.created_at,
-  };
-}
-
-export function mapNote(
-  row: NoteRow,
-  attachments: AttachmentRow[] = [],
-): Note {
-  return {
-    id: row.id,
-    userId: row.user_id,
-    title: row.title,
-    emoji: row.emoji || "🐶",
-    content: row.content_json as JSONContent,
-    plainTextContent: row.plain_text_content,
-    isPinned: row.is_pinned,
-    isArchived: row.is_archived,
-    isDeleted: row.is_deleted,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-    deletedAt: row.deleted_at,
-    attachments: attachments.map(mapAttachment),
-    syncState: "idle",
-  };
-}
-
-export function noteToRow(note: Note) {
-  return {
-    id: note.id,
-    user_id: note.userId,
-    title: note.title,
-    emoji: note.emoji ?? "🐶",
-    content_json: note.content as Json,
-    plain_text_content: note.plainTextContent,
-    is_pinned: note.isPinned,
-    is_archived: note.isArchived,
-    is_deleted: note.isDeleted,
-    created_at: note.createdAt,
-    updated_at: note.updatedAt,
-    deleted_at: note.deletedAt,
-  };
-}
-
-export function safeFilename(filename: string) {
-  const extension = filename.includes(".") ? `.${filename.split(".").pop()}` : "";
-  const basename = filename
-    .replace(extension, "")
-    .normalize("NFKD")
-    .replace(/[^a-zA-Z0-9-_]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-  return `${basename || "file"}${extension.toLowerCase()}`;
 }
 
 export function plainTextFromDocument(node: JSONContent | undefined): string {

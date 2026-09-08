@@ -345,7 +345,7 @@ export function Navigation() {
             <Tooltip label="Settings">
               <button className="account-control" type="button" onClick={() => setSettingsOpen(true)}>
                 <span className="account-avatar">{user?.email.slice(0, 1).toUpperCase()}</span>
-                <span className="account-copy"><strong>Account</strong><small>{user?.email}</small></span>
+                <span className="account-copy"><strong>Local notes</strong><small>{user?.email}</small></span>
                 <Settings className="account-settings-icon" size={15} />
               </button>
             </Tooltip>

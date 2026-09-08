@@ -10,7 +10,6 @@ type MobilePane = "list" | "editor";
 type WorkspaceState = {
   initialized: boolean;
   user: WorkspaceUser | null;
-  localMode: boolean;
   notes: Note[];
   selectedNoteId: string | null;
   view: NotesView;
@@ -19,10 +18,9 @@ type WorkspaceState = {
   commandOpen: boolean;
   settingsOpen: boolean;
   detailsOpen: boolean;
-  isOffline: boolean;
   editorFocusRequest: number;
   toasts: ToastMessage[];
-  initialize: (notes: Note[], user: WorkspaceUser, localMode: boolean) => void;
+  initialize: (notes: Note[], user: WorkspaceUser) => Promise<void>;
   addNote: (note: Note) => void;
   patchNote: (id: string, patch: Partial<Note>, touch?: boolean) => Note | undefined;
   setSyncState: (id: string, state: Note["syncState"]) => void;
@@ -35,14 +33,13 @@ type WorkspaceState = {
   setCommandOpen: (open: boolean) => void;
   setSettingsOpen: (open: boolean) => void;
   setDetailsOpen: (open: boolean) => void;
-  setOffline: (offline: boolean) => void;
   requestEditorFocus: () => void;
   pushToast: (toast: Omit<ToastMessage, "id">) => string;
   dismissToast: (id: string) => void;
 };
 
-function persistIfLocal(state: Pick<WorkspaceState, "localMode" | "notes">) {
-  if (state.localMode) writeLocalNotes(state.notes);
+function persistNotes(state: Pick<WorkspaceState, "notes">) {
+  writeLocalNotes(state.notes);
 }
 
 function notesInView(notes: Note[], view: NotesView) {
@@ -57,7 +54,6 @@ function notesInView(notes: Note[], view: NotesView) {
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   initialized: false,
   user: null,
-  localMode: false,
   notes: [],
   selectedNoteId: null,
   view: "all",
@@ -66,11 +62,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   commandOpen: false,
   settingsOpen: false,
   detailsOpen: false,
-  isOffline: false,
   editorFocusRequest: 0,
   toasts: [],
-  initialize(notes, user, localMode) {
-    const hydratedNotes = localMode ? readLocalNotes(notes) : notes;
+  async initialize(notes, user) {
+    const hydratedNotes = await readLocalNotes(notes);
     const storedSidebar =
       typeof window !== "undefined" && window.localStorage.getItem(SIDEBAR_KEY) === "true";
     const requestedNote =
@@ -86,15 +81,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       initialized: true,
       notes: hydratedNotes,
       user,
-      localMode,
       selectedNoteId: selected,
       sidebarCollapsed: storedSidebar,
-      isOffline: typeof navigator !== "undefined" ? !navigator.onLine : false,
     });
   },
   addNote(note) {
     set((state) => ({ notes: [note, ...state.notes], selectedNoteId: note.id, mobilePane: "editor" }));
-    persistIfLocal(get());
+    persistNotes(get());
   },
   patchNote(id, patch, touch = true) {
     let updated: Note | undefined;
@@ -109,7 +102,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         return updated;
       }),
     }));
-    persistIfLocal(get());
+    persistNotes(get());
     return updated;
   },
   setSyncState(id, syncState) {
@@ -129,12 +122,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
             : state.selectedNoteId,
       };
     });
-    persistIfLocal(get());
+    persistNotes(get());
   },
   receiveNote(incoming) {
     set((state) => {
       const existing = state.notes.find((note) => note.id === incoming.id);
-      if (existing?.syncState === "saving" || existing?.syncState === "offline") return state;
+      if (existing?.syncState === "saving") return state;
       if (existing && new Date(existing.updatedAt) >= new Date(incoming.updatedAt)) return state;
       return {
         notes: existing
@@ -185,7 +178,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   setCommandOpen: (commandOpen) => set({ commandOpen }),
   setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
   setDetailsOpen: (detailsOpen) => set({ detailsOpen }),
-  setOffline: (isOffline) => set({ isOffline }),
   requestEditorFocus: () => set((state) => ({ editorFocusRequest: state.editorFocusRequest + 1 })),
   pushToast(toast) {
     const id = crypto.randomUUID();

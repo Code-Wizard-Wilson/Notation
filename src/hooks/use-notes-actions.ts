@@ -2,8 +2,7 @@
 
 import { useCallback } from "react";
 import { useWorkspaceStore, createEmptyNote } from "@/store/workspace-store";
-import { persistNote, permanentlyDeleteNote, uploadAttachment, deleteAttachment } from "@/lib/data/notes";
-import { queueNoteDelete, queueNoteUpsert } from "@/lib/data/mutation-queue";
+import { uploadAttachment, deleteAttachment } from "@/lib/data/notes";
 import {
   createWikiLinkLookup,
   markdownFileTitle,
@@ -22,41 +21,17 @@ function stripMatchingLeadingHeading(markdown: string, title: string) {
 }
 
 export function useNotesActions() {
-  const localMode = useWorkspaceStore((state) => state.localMode);
   const user = useWorkspaceStore((state) => state.user);
 
-  const sync = useCallback(
-    async (note: Note) => {
-      const store = useWorkspaceStore.getState();
-      if (localMode) {
-        store.setSyncState(note.id, "saved");
-        window.setTimeout(() => store.setSyncState(note.id, "idle"), 1200);
-        return true;
-      }
-
-      if (!navigator.onLine) {
-        queueNoteUpsert(note);
-        store.setSyncState(note.id, "offline");
-        return false;
-      }
-
-      store.setSyncState(note.id, "saving");
-      try {
-        await persistNote(note);
-        store.setSyncState(note.id, "saved");
-        window.setTimeout(() => {
-          const current = useWorkspaceStore.getState().notes.find((item) => item.id === note.id);
-          if (current?.syncState === "saved") store.setSyncState(note.id, "idle");
-        }, 1400);
-        return true;
-      } catch {
-        queueNoteUpsert(note);
-        store.setSyncState(note.id, navigator.onLine ? "error" : "offline");
-        return false;
-      }
-    },
-    [localMode],
-  );
+  const sync = useCallback(async (note: Note) => {
+    const store = useWorkspaceStore.getState();
+    store.setSyncState(note.id, "saved");
+    window.setTimeout(() => {
+      const current = useWorkspaceStore.getState().notes.find((item) => item.id === note.id);
+      if (current?.syncState === "saved") store.setSyncState(note.id, "idle");
+    }, 900);
+    return true;
+  }, []);
 
   const createNote = useCallback(() => {
     if (!user) return null;
@@ -240,21 +215,9 @@ export function useNotesActions() {
       const note = store.notes.find((item) => item.id === id);
       if (!note) return false;
       store.removeNote(id);
-      if (localMode) return true;
-
-      try {
-        await permanentlyDeleteNote(note);
-        return true;
-      } catch {
-        queueNoteDelete(id);
-        store.pushToast({
-          title: "Deletion will retry when you're online",
-          tone: "error",
-        });
-        return false;
-      }
+      return true;
     },
-    [localMode],
+    [],
   );
 
   const addAttachment = useCallback(
@@ -262,16 +225,16 @@ export function useNotesActions() {
       const store = useWorkspaceStore.getState();
       const note = store.notes.find((item) => item.id === noteId);
       if (!note) throw new Error("Open a note before adding a file.");
-      const attachment = await uploadAttachment({ note, file, localMode, onProgress });
+      const attachment = await uploadAttachment({ note, file, onProgress });
       const updated = store.patchNote(
         noteId,
         { attachments: [...note.attachments, attachment] },
         false,
       );
-      if (updated && localMode) await sync(updated);
+      if (updated) await sync(updated);
       return attachment;
     },
-    [localMode, sync],
+    [sync],
   );
 
   const removeAttachment = useCallback(
@@ -280,15 +243,15 @@ export function useNotesActions() {
       const note = store.notes.find((item) => item.id === noteId);
       const attachment = note?.attachments.find((item) => item.id === attachmentId);
       if (!note || !attachment) return;
-      await deleteAttachment(attachment, localMode);
+      await deleteAttachment(attachment);
       const updated = store.patchNote(
         noteId,
         { attachments: note.attachments.filter((item) => item.id !== attachmentId) },
         false,
       );
-      if (updated && localMode) await sync(updated);
+      if (updated) await sync(updated);
     },
-    [localMode, sync],
+    [sync],
   );
 
   const duplicateNote = useCallback(

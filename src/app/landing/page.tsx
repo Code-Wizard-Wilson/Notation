@@ -15,9 +15,10 @@ import {
   Search,
   Table2,
 } from "lucide-react";
+import { publicPath } from "@/lib/public-path";
 import styles from "./landing.module.css";
 
-const githubUrl = process.env.NEXT_PUBLIC_NOTATION_GITHUB_URL || "https://github.com/Code-Wizard-Wilson";
+const githubUrl = process.env.NEXT_PUBLIC_NOTATION_GITHUB_URL || "https://github.com/Code-Wizard-Wilson/Notation";
 
 const reveal = {
   hidden: { opacity: 0, y: 26 },
@@ -37,7 +38,7 @@ const features = [
 function BrandMark() {
   return (
     <span className={styles.brandMark} aria-hidden="true">
-      <Image src="/icon.svg" alt="" width={64} height={64} unoptimized />
+      <Image src={publicPath("/icon.svg")} alt="" width={64} height={64} unoptimized />
     </span>
   );
 }
@@ -115,7 +116,7 @@ export default function LandingPage() {
         >
           <div className={styles.heroVisual}>
             <Image
-              src="/landing/editor.png"
+              src={publicPath("/landing/editor.png")}
               alt="Notation editor showing a product direction note"
               width={2880}
               height={1800}
@@ -158,7 +159,7 @@ export default function LandingPage() {
           </div>
           <p>One compact palette for notes and actions. Fewer panels, fewer context switches.</p>
           <div className={styles.shotFrame}>
-            <Image src="/landing/search-custom.png" alt="Notation command palette" width={1440} height={900} className={styles.searchShot} />
+            <Image src={publicPath("/landing/search-custom.png")} alt="Notation command palette" width={1440} height={900} className={styles.searchShot} />
           </div>
         </motion.article>
 

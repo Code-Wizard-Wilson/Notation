@@ -17,8 +17,6 @@
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/neucha": "^5.3.0",
     "@primer/octicons-react": "^19.33.0",
-    "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
     "@tiptap/core": "latest",
     "@tiptap/extension-character-count": "latest",
     "@tiptap/extension-drag-handle-react": "^3.31.0",

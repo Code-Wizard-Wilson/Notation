@@ -37,7 +37,6 @@ import {
   Table2,
   Text,
   Trash2,
-  WifiOff,
 } from "lucide-react";
 import { CharacterCount } from "@tiptap/extension-character-count";
 import type { JSONContent } from "@tiptap/core";
@@ -274,7 +273,6 @@ function EditorDocument({
 }) {
   const notes = useWorkspaceStore((state) => state.notes);
   const focusRequest = useWorkspaceStore((state) => state.editorFocusRequest);
-  const isOffline = useWorkspaceStore((state) => state.isOffline);
   const setMobilePane = useWorkspaceStore((state) => state.setMobilePane);
   const setSelected = useWorkspaceStore((state) => state.setSelectedNoteId);
   const setView = useWorkspaceStore((state) => state.setView);
@@ -335,7 +333,7 @@ function EditorDocument({
 
   const scheduleSave = useCallback(() => {
     const store = useWorkspaceStore.getState();
-    store.setSyncState(note.id, store.isOffline ? "offline" : "saving");
+    store.setSyncState(note.id, "saving");
     if (saveTimer.current) window.clearTimeout(saveTimer.current);
     saveTimer.current = window.setTimeout(() => void syncSnapshot(note.id), 650);
   }, [note.id, syncSnapshot]);
@@ -720,7 +718,7 @@ function EditorDocument({
   }, [blockInsertMenu, editor]);
 
   useEffect(() => {
-    if (!editor || initialDocument.changed || note.syncState === "saving" || note.syncState === "offline") return;
+    if (!editor || initialDocument.changed || note.syncState === "saving") return;
     const serialized = JSON.stringify(note.content);
     if (serialized !== lastContent.current) {
       lastContent.current = serialized;
@@ -1077,14 +1075,12 @@ function EditorDocument({
         </div>
 
         <div className="save-status" aria-live="polite">
-          {isOffline || note.syncState === "offline" ? (
-            <span><WifiOff size={11} /> OFFLINE</span>
-          ) : note.syncState === "saving" ? (
+          {note.syncState === "saving" ? (
             <span>SAVING</span>
           ) : note.syncState === "saved" ? (
             <span>SAVED</span>
           ) : note.syncState === "error" ? (
-            <span className="save-error">SYNC PENDING</span>
+            <span className="save-error">SAVE FAILED</span>
           ) : null}
         </div>
 

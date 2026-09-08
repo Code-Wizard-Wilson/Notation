@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import type { CSSProperties } from "react";
+import { publicPath } from "@/lib/public-path";
 import "@fontsource-variable/schibsted-grotesk";
 import "@fontsource-variable/inter";
 import "@fontsource/ibm-plex-mono/400.css";
@@ -29,7 +31,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body style={{ "--notation-icon-image": `url("${publicPath("/icon.svg")}")` } as CSSProperties}>{children}</body>
     </html>
   );
 }
