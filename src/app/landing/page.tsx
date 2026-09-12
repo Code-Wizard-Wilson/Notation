@@ -73,7 +73,7 @@ export default function LandingPage() {
           <div className={styles.navActions}>
             <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.navCta}>
               <MarkGithubIcon size={15} aria-hidden="true" />
-              <span>Get it</span>
+              <span>Source</span>
             </a>
           </div>
         </nav>
@@ -96,7 +96,7 @@ export default function LandingPage() {
           <div className={styles.heroActions}>
             <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.primaryCta}>
               <MarkGithubIcon size={19} aria-hidden="true" />
-              <span>Get it now on GitHub</span>
+              <span>View source on GitHub</span>
               <ArrowUpRight size={16} />
             </a>
           </div>
@@ -215,7 +215,7 @@ export default function LandingPage() {
           <p>Clone it, change it, make it yours.</p>
           <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.finalButton}>
             <MarkGithubIcon size={20} aria-hidden="true" />
-            <span>Get it now on GitHub</span>
+            <span>View source on GitHub</span>
             <ArrowUpRight size={16} />
           </a>
         </motion.div>

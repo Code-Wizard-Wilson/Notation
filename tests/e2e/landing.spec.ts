@@ -10,7 +10,7 @@ for (const viewport of [
     await page.goto("/landing");
 
     await expect(page.getByRole("heading", { level: 1, name: /Write before the thought disappears/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Get it now on GitHub/i }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /View source on GitHub/i }).first()).toBeVisible();
 
     const metrics = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
