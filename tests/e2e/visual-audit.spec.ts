@@ -93,3 +93,52 @@ test("desktop sidebar keeps one icon grid while collapsing", async ({ page }) =>
   }));
   expect(layers.sidebar).toBeGreaterThan(layers.editorHeader);
 });
+
+test("loading skeleton mirrors the responsive workspace layout", async ({ browser }, testInfo) => {
+  const baseURL = String(testInfo.project.use.baseURL ?? "http://localhost:3000");
+
+  const desktop = await browser.newContext({
+    baseURL,
+    javaScriptEnabled: false,
+    viewport: { width: 1440, height: 900 },
+  });
+  const desktopPage = await desktop.newPage();
+  await desktopPage.goto("/");
+  await expect(desktopPage.locator(".skeleton-navigation")).toBeVisible();
+  await expect(desktopPage.locator(".skeleton-list-pane")).toBeHidden();
+  await expect(desktopPage.locator(".skeleton-editor-pane")).toBeVisible();
+
+  const desktopNav = await desktopPage.locator(".skeleton-navigation").boundingBox();
+  const desktopContent = await desktopPage.locator(".skeleton-workspace-content").boundingBox();
+  expect(desktopNav?.width).toBe(224);
+  expect(desktopContent?.x).toBe((desktopNav?.x ?? 0) + (desktopNav?.width ?? 0) + 10);
+  await desktop.close();
+
+  const tablet = await browser.newContext({
+    baseURL,
+    javaScriptEnabled: false,
+    viewport: { width: 1024, height: 768 },
+  });
+  const tabletPage = await tablet.newPage();
+  await tabletPage.goto("/");
+  await expect(tabletPage.locator(".skeleton-navigation")).toBeHidden();
+  await expect(tabletPage.locator(".skeleton-tablet-rail")).toBeVisible();
+  await expect(tabletPage.locator(".skeleton-list-pane")).toBeVisible();
+  await expect(tabletPage.locator(".skeleton-editor-pane")).toBeVisible();
+  await expect(tabletPage.locator(".skeleton-mobile-nav")).toBeHidden();
+  await tablet.close();
+
+  const mobile = await browser.newContext({
+    baseURL,
+    javaScriptEnabled: false,
+    viewport: { width: 430, height: 932 },
+  });
+  const mobilePage = await mobile.newPage();
+  await mobilePage.goto("/");
+  await expect(mobilePage.locator(".skeleton-navigation")).toBeHidden();
+  await expect(mobilePage.locator(".skeleton-tablet-rail")).toBeHidden();
+  await expect(mobilePage.locator(".skeleton-list-pane")).toBeVisible();
+  await expect(mobilePage.locator(".skeleton-editor-pane")).toBeHidden();
+  await expect(mobilePage.locator(".skeleton-mobile-nav")).toBeVisible();
+  await mobile.close();
+});

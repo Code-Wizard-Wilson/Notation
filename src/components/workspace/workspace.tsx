@@ -77,9 +77,120 @@ export function Workspace({
 function WorkspaceSkeleton() {
   return (
     <main className="workspace-skeleton" aria-label="Loading notes">
-      <span className="skeleton-rail" />
-      <section><span /><span /><span /><span /></section>
-      <article><span /><span /><span /></article>
+      <aside className="skeleton-navigation" aria-hidden="true">
+        <div className="skeleton-nav-head">
+          <div className="skeleton-brand">
+            <span className="skeleton-block skeleton-brand-icon" />
+            <span className="skeleton-block skeleton-brand-name" />
+          </div>
+          <span className="skeleton-block skeleton-square-control" />
+        </div>
+
+        <div className="skeleton-nav-main">
+          <div className="skeleton-nav-row skeleton-nav-row-primary">
+            <span className="skeleton-block skeleton-nav-icon" />
+            <span className="skeleton-block skeleton-nav-copy skeleton-nav-copy-wide" />
+          </div>
+          <div className="skeleton-nav-row">
+            <span className="skeleton-block skeleton-nav-icon" />
+            <span className="skeleton-block skeleton-nav-copy" />
+          </div>
+
+          <div className="skeleton-sidebar-notes">
+            <div className="skeleton-sidebar-head">
+              <span className="skeleton-block skeleton-label-line" />
+              <span className="skeleton-block skeleton-count-dot" />
+            </div>
+            <div className="skeleton-sidebar-list">
+              <div className="skeleton-sidebar-note"><span className="skeleton-block skeleton-sidebar-note-a" /></div>
+              <div className="skeleton-sidebar-note"><span className="skeleton-block skeleton-sidebar-note-b" /></div>
+              <div className="skeleton-sidebar-note"><span className="skeleton-block skeleton-sidebar-note-c" /></div>
+              <div className="skeleton-sidebar-note"><span className="skeleton-block skeleton-sidebar-note-d" /></div>
+              <div className="skeleton-sidebar-note"><span className="skeleton-block skeleton-sidebar-note-e" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="skeleton-nav-foot">
+          <div className="skeleton-view-switcher">
+            <span className="skeleton-block skeleton-view-icon" />
+            <span className="skeleton-block skeleton-view-icon" />
+            <span className="skeleton-block skeleton-view-icon" />
+            <span className="skeleton-block skeleton-view-icon" />
+          </div>
+          <div className="skeleton-account-row">
+            <span className="skeleton-block skeleton-avatar" />
+            <div className="skeleton-account-copy">
+              <span className="skeleton-block" />
+              <span className="skeleton-block" />
+            </div>
+            <span className="skeleton-block skeleton-settings-dot" />
+          </div>
+        </div>
+      </aside>
+
+      <aside className="skeleton-tablet-rail" aria-hidden="true">
+        <span className="skeleton-block skeleton-tablet-button" />
+        <span className="skeleton-block skeleton-tablet-button skeleton-tablet-primary" />
+        <span className="skeleton-block skeleton-tablet-button" />
+        <span className="skeleton-block skeleton-tablet-divider" />
+        <span className="skeleton-block skeleton-tablet-button" />
+        <span className="skeleton-block skeleton-tablet-button" />
+        <span className="skeleton-block skeleton-tablet-button" />
+        <span className="skeleton-block skeleton-tablet-button skeleton-tablet-settings" />
+      </aside>
+
+      <div className="skeleton-workspace-content" aria-hidden="true">
+        <section className="skeleton-list-pane">
+          <header className="skeleton-list-head">
+            <div>
+              <span className="skeleton-block skeleton-micro-label" />
+              <span className="skeleton-block skeleton-list-title" />
+            </div>
+            <span className="skeleton-block skeleton-square-control" />
+          </header>
+          <div className="skeleton-list-count">
+            <span className="skeleton-block" />
+          </div>
+          <div className="skeleton-list-scroll">
+            {[0, 1, 2, 3].map((index) => (
+              <div className="skeleton-note-row" key={index}>
+                <span className="skeleton-block skeleton-note-title" />
+                <span className="skeleton-block skeleton-note-preview" />
+                <span className="skeleton-block skeleton-note-meta" />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <article className="skeleton-editor-pane">
+          <div className="skeleton-editor-toolbar">
+            <span className="skeleton-block skeleton-editor-status" />
+            <div>
+              <span className="skeleton-block skeleton-square-control" />
+              <span className="skeleton-block skeleton-square-control" />
+              <span className="skeleton-block skeleton-square-control" />
+            </div>
+          </div>
+          <div className="skeleton-editor-page">
+            <span className="skeleton-block skeleton-editor-title" />
+            <div className="skeleton-editor-body">
+              <span className="skeleton-block skeleton-editor-line skeleton-editor-line-a" />
+              <span className="skeleton-block skeleton-editor-line skeleton-editor-line-b" />
+              <span className="skeleton-block skeleton-editor-line skeleton-editor-line-c" />
+              <span className="skeleton-block skeleton-editor-line skeleton-editor-line-d" />
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div className="skeleton-mobile-nav" aria-hidden="true">
+        <span className="skeleton-block" />
+        <span className="skeleton-block" />
+        <span className="skeleton-block skeleton-mobile-primary" />
+        <span className="skeleton-block" />
+        <span className="skeleton-block" />
+      </div>
     </main>
   );
 }
