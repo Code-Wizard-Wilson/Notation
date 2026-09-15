@@ -17,7 +17,7 @@ import {
 import { publicPath } from "@/lib/public-path";
 import styles from "./landing.module.css";
 
-const githubUrl = process.env.NEXT_PUBLIC_NOTATION_GITHUB_URL || "https://github.com/Code-Wizard-Wilson/Notation";
+const githubUrl = "https://github.com/Code-Wizard-Wilson/Notation";
 
 const reveal = {
   hidden: { opacity: 0, y: 26 },

@@ -469,7 +469,7 @@ export async function exportNoteAsPdf(note: Note) {
   const definition: TDocumentDefinitions = {
     pageSize: "A4",
     pageMargins: [56, 54, 56, 58],
-    info: { title, creator: "NKeeper" },
+    info: { title, creator: "Notation" },
     defaultStyle: {
       font: "Roboto",
       fontSize: 11.5,

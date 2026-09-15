@@ -1,112 +1,66 @@
-# Notation
+<p align="center">
+  <img src="src/app/icon.svg" alt="Notation" width="72" height="72" />
+</p>
 
-Notation is a local-first, open-source notes app focused on fast writing, rich text, Markdown, backlinks, tables, images, and keyboard-driven navigation.
+<h1 align="center">Notation</h1>
+
+<p align="center">
+  A fast, local-first notes app that keeps the interface out of the way.
+</p>
+
+<p align="center">
+  <a href="https://notation.is-a.dev/">Website</a> ·
+  <a href="#run-locally">Run locally</a> ·
+  <a href="#license">License</a>
+</p>
 
 ![Notation editor](public/landing/editor.png)
 
-## What it does
+## Features
 
-- Rich text editing with headings, lists, highlights, links, code blocks, and task lists
-- Editable tables inside the note surface
-- Image and file attachments
-- Wiki-style links and backlinks between notes
-- Fast note and command search
+- Rich-text editing with headings, lists, highlights, links, code blocks, and tasks
 - Markdown import and export
+- Wiki-style links and backlinks
+- Editable tables
+- Image and file attachments
+- Fast note and command search
 - PDF export
 - Keyboard-first navigation and note actions
-- Local-only storage with no account required
+- Responsive desktop, tablet, and mobile layouts
 
-## Privacy and security
+## Local-first by design
 
-Notation is designed to run entirely on your device.
+Notation runs entirely in the browser and stores notes locally with IndexedDB.
 
-- No account or sign-in
-- No backend or cloud database
-- No analytics or telemetry
-- No ads
-- No remote note synchronization
-- Notes and attachments are stored locally in the browser using IndexedDB
-- UI preferences are stored in localStorage
+There is no account, backend, cloud database, analytics, telemetry, advertising, or remote note synchronization. UI preferences stay in localStorage.
 
-The app does not upload your notes, attachments, credentials, or usage data to a server.
-
-When exporting a note to PDF, Notation may fetch an image URL already embedded in that note so the image can be included in the generated PDF. Local images are stored as data URLs and do not require a network request.
+When exporting a note to PDF, Notation may fetch an image URL that is already embedded in that note so it can be included in the generated document. Local images are stored as data URLs and require no network request.
 
 ## Run locally
 
-Requirements:
-
-- Node.js 20 or newer
-- npm
+Requires Node.js 20+ and npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open:
+Open `http://localhost:3000`.
 
-```text
-http://localhost:3000
-```
-
-## Build
+## Build and test
 
 ```bash
 npm run typecheck
 npm run build
-```
-
-The project uses Next.js static export, so the production site can be served as static files.
-
-## Tests
-
-```bash
 npm run test:e2e
 ```
 
-End-to-end tests use Playwright.
+The production build uses Next.js static export.
 
-## Tech stack
+## Stack
 
-- Next.js
-- React
-- TypeScript
-- Tiptap / ProseMirror
-- Zustand
-- IndexedDB
-- Playwright
-
-## Project structure
-
-```text
-src/app/                 Next.js routes and global app setup
-src/components/editor/   Editor UI and Tiptap extensions
-src/components/workspace Workspace, navigation, search, settings
-src/lib/data/            Local persistence
-src/lib/export/          Markdown and PDF export
-src/store/               Client-side state stores
-public/landing/          Landing-page screenshots
-```
-
-## Data model
-
-Workspace notes are stored in the browser database:
-
-```text
-Database: notation-local
-Object store: workspace
-Key: notes
-```
-
-Older localStorage data under `notation.local-notes.v1` is migrated automatically when present.
-
-## Website
-
-Project landing page: https://code-wizard-wilson.github.io/
-
-Source code: https://github.com/Code-Wizard-Wilson/Notation
+Next.js · React · TypeScript · Tiptap / ProseMirror · Zustand · IndexedDB · Playwright
 
 ## License
 
-Notation is released under the MIT License. See [LICENSE](LICENSE).
+Released under the [MIT License](LICENSE).

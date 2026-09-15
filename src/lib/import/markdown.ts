@@ -122,7 +122,7 @@ function stripObsidianSyntax(markdown: string) {
   // Block IDs are internal Obsidian anchors and should not be visible.
   value = value.replace(/[ \t]+\^[A-Za-z0-9_-]+[ \t]*$/gm, "");
 
-  // Preserve Obsidian highlights as NKeeper yellow marker.
+  // Preserve Obsidian highlights as the Notation yellow marker.
   value = value.replace(/==([^=\n]+)==/g, '<mark data-color="#FEF08A" style="background-color:#FEF08A">$1</mark>');
 
   // Footnote plumbing should not leak bracket syntax into rich text.
