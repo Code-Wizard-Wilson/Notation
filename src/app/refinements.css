@@ -4472,3 +4472,414 @@ button:active:not(:disabled) {
     padding-left: 12px;
   }
 }
+
+/* Branched sidebar: mirror React Bits BranchedMenu geometry and motion exactly. */
+@media (min-width: 1100px) {
+  .sidebar-notes-scroll:has(.folder-library--sidebar) {
+    --tree-ink: #18181b;
+    --tree-muted: color-mix(in srgb, var(--tree-ink) 52%, transparent);
+    --tree-line: #d4d4d8;
+    --tree-accent: #18181b;
+    --tree-row: 36px;
+    --tree-indent: 40px;
+    --tree-draw: 400ms;
+    --tree-fold: 300ms;
+    --tree-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .sidebar-notes-scroll:has(.folder-library--sidebar)::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    border-radius: 1px;
+    background: linear-gradient(to bottom, var(--tree-line) 0%, var(--tree-line) 55%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .sidebar-tree-marker {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    z-index: 6;
+    width: 2px;
+    height: 16px;
+    border-radius: 1px;
+    background: var(--tree-accent);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      top 220ms var(--tree-ease-out),
+      opacity 150ms ease;
+  }
+
+  .sidebar-tree-marker[data-on] {
+    opacity: 1;
+  }
+
+  .folder-library--sidebar,
+  .folder-library--sidebar .folder-branch-menu {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .folder-library--sidebar .folder-branch-menu::before,
+  .folder-library--sidebar .folder-branch-section.is-open .folder-branch-head::before,
+  .folder-library--sidebar .folder-branch-section.is-open.is-active-folder .folder-branch-head::after,
+  .folder-library--sidebar .folder-branch-section.is-active-folder .folder-branch-head::before {
+    display: none !important;
+  }
+
+  .folder-library--sidebar .folder-context-anchor {
+    display: block;
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  .folder-library--sidebar .folder-branch-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .folder-library--sidebar .folder-branch-head-wrap {
+    min-height: 0;
+  }
+
+  .folder-library--sidebar .folder-branch-head,
+  .folder-library--sidebar .folder-branch-head--renaming {
+    display: flex;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    align-items: center;
+    margin: 0;
+    padding: 9px 48px 9px 0;
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    color: var(--tree-muted);
+    font: inherit;
+    text-align: left;
+    outline: none;
+    box-shadow: none !important;
+    transition: color 200ms ease;
+  }
+
+  .folder-library--sidebar .folder-branch-section.is-open .folder-branch-head,
+  .folder-library--sidebar .folder-branch-section.is-active-folder .folder-branch-head {
+    color: var(--tree-ink);
+  }
+
+  .folder-library--sidebar .folder-branch-head:hover,
+  .folder-library--sidebar .folder-branch-head:focus-visible {
+    background: none !important;
+    color: var(--tree-ink);
+  }
+
+  .folder-library--sidebar .folder-branch-name,
+  .folder-library--sidebar .folder-rename-input {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .folder-library--sidebar .folder-branch-count {
+    display: none;
+  }
+
+  .folder-library--sidebar .folder-branch-actions {
+    right: 0;
+  }
+
+  .folder-library--sidebar .folder-branch-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--tree-fold) var(--tree-ease-out);
+  }
+
+  .folder-library--sidebar .folder-branch-section.is-open .folder-branch-body {
+    grid-template-rows: 1fr;
+  }
+
+  .folder-library--sidebar .folder-branch-fold {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .folder-library--sidebar .folder-branch-tree {
+    position: relative;
+    padding: 6px 0;
+    box-sizing: border-box;
+  }
+
+  .folder-library--sidebar .folder-branch-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  .folder-library--sidebar .folder-branch-section.is-open .folder-branch-lines {
+    opacity: 1;
+    transition: opacity 250ms ease 100ms;
+  }
+
+  .folder-library--sidebar .folder-branch-line-base,
+  .folder-library--sidebar .folder-branch-line-active,
+  .sidebar-unfiled-line-base,
+  .sidebar-unfiled-line-active {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .folder-library--sidebar .folder-branch-line-base,
+  .sidebar-unfiled-line-base {
+    stroke: var(--tree-line);
+  }
+
+  .folder-library--sidebar .folder-branch-line-active,
+  .sidebar-unfiled-line-active {
+    stroke: var(--tree-accent);
+    animation: none;
+    transition: stroke-dashoffset var(--tree-draw) var(--tree-ease-out);
+  }
+
+  .folder-library--sidebar .folder-branch-tree .note-context-anchor {
+    display: block;
+    width: 100%;
+    height: var(--tree-row);
+  }
+
+  .folder-library--sidebar .folder-note-row {
+    width: 100%;
+    height: var(--tree-row);
+  }
+
+  .folder-library--sidebar .folder-note-item {
+    display: flex;
+    width: 100%;
+    height: var(--tree-row);
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0 30px 0 var(--tree-indent);
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    color: var(--tree-muted);
+    text-align: left;
+    outline: none;
+    box-shadow: none !important;
+    transition: color 200ms ease;
+  }
+
+  .folder-library--sidebar .folder-note-item > svg {
+    flex: none;
+    color: currentColor;
+    stroke-width: 1.8;
+  }
+
+  .folder-library--sidebar .folder-note-item > span:first-of-type {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .folder-library--sidebar .folder-note-item:hover,
+  .folder-library--sidebar .folder-note-item:focus-visible {
+    background: none !important;
+    color: var(--tree-ink);
+  }
+
+  .folder-library--sidebar .folder-note-item.is-selected {
+    background: none !important;
+    color: var(--tree-accent);
+    font-weight: 500;
+  }
+
+  .folder-library--sidebar .folder-note-item.is-selected > span:first-of-type {
+    font-weight: 500;
+  }
+
+  .folder-library--sidebar .folder-branch-empty {
+    padding: 0 0 6px var(--tree-indent);
+  }
+
+  .folder-library--sidebar .folder-branch-empty button {
+    height: var(--tree-row);
+    padding: 0;
+    border-radius: 0;
+    background: none !important;
+    color: var(--tree-muted);
+    font-size: 13px;
+  }
+
+  .sidebar-tree-section--unfiled {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .sidebar-tree-heading {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 9px 0;
+    color: var(--tree-ink);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .sidebar-tree-heading::before,
+  .sidebar-tree-section--unfiled:has(.sidebar-unfiled-row.is-selected) .sidebar-tree-heading::after {
+    display: none !important;
+  }
+
+  .sidebar-unfiled-tree {
+    position: relative;
+    padding: 6px 0;
+    box-sizing: border-box;
+  }
+
+  .sidebar-unfiled-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 250ms ease 100ms;
+  }
+
+  .sidebar-unfiled-trunk,
+  .sidebar-unfiled-active-path,
+  .sidebar-unfiled-elbow {
+    display: none !important;
+  }
+
+  .sidebar-unfiled-tree .note-context-anchor {
+    display: block;
+    width: 100%;
+    height: var(--tree-row);
+  }
+
+  .sidebar-unfiled-row {
+    position: relative;
+    width: 100%;
+    height: var(--tree-row);
+    padding: 0;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-row,
+  .sidebar-unfiled-row .sidebar-note-item {
+    width: 100%;
+    height: var(--tree-row);
+    border-radius: 0;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-item {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0 48px 0 var(--tree-indent);
+    border: 0;
+    background: none !important;
+    color: var(--tree-muted);
+    outline: none;
+    box-shadow: none !important;
+    transition: color 200ms ease;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-item > svg {
+    flex: none;
+    color: currentColor;
+    stroke-width: 1.8;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-item > span {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-item:hover,
+  .sidebar-unfiled-row .sidebar-note-item:focus-visible,
+  .sidebar-unfiled-row .sidebar-note-row:hover .sidebar-note-item:not(.is-selected),
+  .sidebar-unfiled-row .sidebar-note-row:focus-within .sidebar-note-item:not(.is-selected) {
+    background: none !important;
+    color: var(--tree-ink);
+  }
+
+  .sidebar-unfiled-row .sidebar-note-item.is-selected {
+    background: none !important;
+    color: var(--tree-accent);
+  }
+
+  .sidebar-unfiled-row .sidebar-note-item.is-selected > span {
+    font-weight: 500;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-pinned-indicator {
+    right: 4px;
+    color: var(--tree-ink);
+  }
+
+  .sidebar-unfiled-row .sidebar-note-hover-actions {
+    right: 0;
+  }
+
+  .sidebar-unfiled-row .sidebar-note-rename-input {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-tree-marker {
+    transition: opacity 150ms ease !important;
+  }
+
+  .folder-library--sidebar .folder-branch-body,
+  .folder-library--sidebar .folder-branch-line-active,
+  .sidebar-unfiled-line-active {
+    transition: none !important;
+  }
+}
+
+/* Active tree strokes stay neutral everywhere; no app accent color leaks into the menu. */
+.folder-branch-line-active,
+.sidebar-unfiled-line-active {
+  stroke: #18181b !important;
+}
+
+.folder-branch-section.is-active-folder .folder-branch-head::before,
+.folder-branch-section.is-open.is-active-folder .folder-branch-head::after,
+.sidebar-tree-section--unfiled:has(.sidebar-unfiled-row.is-selected) .sidebar-tree-heading::after {
+  background: #18181b !important;
+}

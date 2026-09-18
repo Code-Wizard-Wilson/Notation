@@ -14,11 +14,11 @@ type FolderTreeProps = {
   mode?: "sidebar" | "list";
 };
 
-const SIDEBAR_ROW = 38;
-const LIST_ROW = 40;
-const PAD = 5;
-const TRUNK = 10;
-const RADIUS = 8;
+const SIDEBAR_ROW = 36;
+const LIST_ROW = 36;
+const PAD = 6;
+const TRUNK = 14;
+const RADIUS = 10;
 
 function noteSort(a: Note, b: Note) {
   if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
@@ -35,6 +35,12 @@ function reachPath(index: number, rowHeight: number, indent: number) {
   const y = PAD + index * rowHeight + rowHeight / 2;
   const endX = indent - 8;
   return `M ${TRUNK} 0 V ${y - RADIUS} A ${RADIUS} ${RADIUS} 0 0 0 ${TRUNK + RADIUS} ${y} H ${endX}`;
+}
+
+function reachLength(index: number, rowHeight: number, indent: number) {
+  const y = PAD + index * rowHeight + rowHeight / 2;
+  const endX = indent - 8;
+  return y - RADIUS + (Math.PI * RADIUS) / 2 + (endX - TRUNK - RADIUS);
 }
 
 function FolderMenu({
@@ -135,7 +141,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
 
   const selectedFolderId = activeNotes.find((note) => note.id === selectedId)?.folderId ?? null;
   const rowHeight = mode === "sidebar" ? SIDEBAR_ROW : LIST_ROW;
-  const indent = mode === "sidebar" ? 44 : 46;
+  const indent = 40;
 
   function toggleFolder(id: string) {
     setOpenFolders((current) => {
@@ -252,7 +258,6 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
             const isOpen = openFolders.has(folder.id);
             const isActiveFolder = selectedFolderId === folder.id;
             const bodyHeight = PAD * 2 + folderNotes.length * rowHeight;
-            const activeIndex = folderNotes.findIndex((note) => note.id === selectedId);
 
             return (
               <FolderMenu
@@ -349,14 +354,22 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                               d={`M ${TRUNK} 0 V ${PAD + (folderNotes.length - 1) * rowHeight + rowHeight / 2 - RADIUS}`}
                             />
                             {folderNotes.map((note, index) => (
-                              <path key={note.id} className="folder-branch-line-base" d={branchPath(index, rowHeight, indent)} />
+                              <path key={`base:${note.id}`} className="folder-branch-line-base" d={branchPath(index, rowHeight, indent)} />
                             ))}
-                            {activeIndex >= 0 && (
-                              <path
-                                className="folder-branch-line-active"
-                                d={reachPath(activeIndex, rowHeight, indent)}
-                              />
-                            )}
+                            {folderNotes.map((note, index) => {
+                              const length = reachLength(index, rowHeight, indent);
+                              return (
+                                <path
+                                  key={`reach:${note.id}`}
+                                  className="folder-branch-line-active"
+                                  d={reachPath(index, rowHeight, indent)}
+                                  style={{
+                                    strokeDasharray: length,
+                                    strokeDashoffset: note.id === selectedId ? 0 : length,
+                                  }}
+                                />
+                              );
+                            })}
                           </svg>
 
                           {folderNotes.map((note) => (

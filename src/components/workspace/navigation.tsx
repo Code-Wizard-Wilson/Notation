@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Archive,
   PanelLeft,
@@ -30,6 +30,31 @@ const entries: Array<{ id: NotesView; label: string; icon: typeof FileText }> = 
   { id: "trash", label: "Trash", icon: Trash2 },
 ];
 
+const TREE_PAD = 6;
+const TREE_ROW = 36;
+const TREE_INDENT = 40;
+const TREE_TRUNK = 14;
+const TREE_RADIUS = 10;
+
+function treeRowY(index: number) {
+  return TREE_PAD + index * TREE_ROW + TREE_ROW / 2;
+}
+
+function treeBranchPath(index: number) {
+  const y = treeRowY(index);
+  return `M ${TREE_TRUNK} ${y - TREE_RADIUS} A ${TREE_RADIUS} ${TREE_RADIUS} 0 0 0 ${TREE_TRUNK + TREE_RADIUS} ${y} H ${TREE_INDENT - 8}`;
+}
+
+function treeReachPath(index: number) {
+  const y = treeRowY(index);
+  return `M ${TREE_TRUNK} 0 V ${y - TREE_RADIUS} A ${TREE_RADIUS} ${TREE_RADIUS} 0 0 0 ${TREE_TRUNK + TREE_RADIUS} ${y} H ${TREE_INDENT - 8}`;
+}
+
+function treeReachLength(index: number) {
+  const y = treeRowY(index);
+  return y - TREE_RADIUS + (Math.PI * TREE_RADIUS) / 2 + (TREE_INDENT - 8 - TREE_TRUNK - TREE_RADIUS);
+}
+
 export function Navigation() {
   const collapsed = useWorkspaceStore((state) => state.sidebarCollapsed);
   const view = useWorkspaceStore((state) => state.view);
@@ -49,6 +74,8 @@ export function Navigation() {
   const [renamingNoteId, setRenamingNoteId] = useState<string | null>(null);
   const [noteNameDraft, setNoteNameDraft] = useState("");
   const noteNameInputRef = useRef<HTMLInputElement>(null);
+  const sidebarTreeRef = useRef<HTMLDivElement>(null);
+  const sidebarMarkerRef = useRef<HTMLSpanElement>(null);
   const cancelRenameRef = useRef(false);
   const lastTouchTapRef = useRef<{ id: string; at: number } | null>(null);
 
@@ -71,7 +98,48 @@ export function Navigation() {
     });
 
   const rootVisibleNotes = view === "all" ? visibleNotes.filter((note) => !note.folderId) : visibleNotes;
-  const unfiledActiveIndex = view === "all" ? rootVisibleNotes.findIndex((note) => note.id === selectedId) : -1;
+
+  useLayoutEffect(() => {
+    const nav = sidebarTreeRef.current;
+    const marker = sidebarMarkerRef.current;
+    if (!nav || !marker || view !== "all") return;
+
+    const place = (glide: boolean) => {
+      const head = nav.querySelector<HTMLElement>(
+        ".folder-branch-section.is-active-folder.is-open .folder-branch-head, .sidebar-tree-section--unfiled:has(.sidebar-unfiled-row.is-selected) .sidebar-tree-heading",
+      );
+      if (!glide) marker.style.transition = "none";
+      if (head) {
+        const navRect = nav.getBoundingClientRect();
+        const headRect = head.getBoundingClientRect();
+        marker.style.top = `${headRect.top - navRect.top + nav.scrollTop + (headRect.height - 16) / 2}px`;
+        marker.setAttribute("data-on", "");
+      } else {
+        marker.removeAttribute("data-on");
+      }
+      if (!glide) {
+        void marker.offsetHeight;
+        marker.style.transition = "";
+      }
+    };
+
+    place(true);
+    let first = true;
+    const observer = new ResizeObserver(() => {
+      if (first) {
+        first = false;
+        return;
+      }
+      place(false);
+    });
+    observer.observe(nav);
+    const mutationObserver = new MutationObserver(() => place(true));
+    mutationObserver.observe(nav, { subtree: true, attributes: true, attributeFilter: ["class"] });
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [folders, rootVisibleNotes.length, selectedId, view]);
 
   function startNoteRename(id: string, title: string) {
     cancelRenameRef.current = false;
@@ -221,27 +289,50 @@ export function Navigation() {
               </div>
             </div>
 
-            <div className="sidebar-notes-scroll">
+            <div ref={sidebarTreeRef} className="sidebar-notes-scroll">
+              {view === "all" && <span ref={sidebarMarkerRef} className="sidebar-tree-marker" aria-hidden="true" />}
               {view === "all" ? (
                 <>
                   <FolderTree mode="sidebar" />
                   {rootVisibleNotes.length > 0 && (
                     <section className="sidebar-tree-section sidebar-tree-section--unfiled" aria-label="Unfiled notes">
                       <div className="sidebar-tree-heading">Unfiled</div>
-                      <div className="sidebar-unfiled-tree" style={{ ["--unfiled-count" as string]: rootVisibleNotes.length }}>
-                        <span className="sidebar-unfiled-trunk" aria-hidden="true" />
-                        {unfiledActiveIndex >= 0 && (
-                          <span
-                            className="sidebar-unfiled-active-path"
-                            aria-hidden="true"
-                            style={{ ["--active-row" as string]: unfiledActiveIndex }}
+                      <div
+                        className="sidebar-unfiled-tree"
+                        style={{ height: TREE_PAD * 2 + rootVisibleNotes.length * TREE_ROW }}
+                      >
+                        <svg
+                          className="sidebar-unfiled-lines"
+                          width={TREE_INDENT}
+                          height={TREE_PAD * 2 + rootVisibleNotes.length * TREE_ROW}
+                          aria-hidden="true"
+                        >
+                          <path
+                            className="sidebar-unfiled-line-base"
+                            d={`M ${TREE_TRUNK} 0 V ${treeRowY(rootVisibleNotes.length - 1) - TREE_RADIUS}`}
                           />
-                        )}
+                          {rootVisibleNotes.map((note, index) => (
+                            <path key={`base:${note.id}`} className="sidebar-unfiled-line-base" d={treeBranchPath(index)} />
+                          ))}
+                          {rootVisibleNotes.map((note, index) => {
+                            const length = treeReachLength(index);
+                            return (
+                              <path
+                                key={`reach:${note.id}`}
+                                className="sidebar-unfiled-line-active"
+                                d={treeReachPath(index)}
+                                style={{
+                                  strokeDasharray: length,
+                                  strokeDashoffset: note.id === selectedId ? 0 : length,
+                                }}
+                              />
+                            );
+                          })}
+                        </svg>
                         {rootVisibleNotes.map((note) => (
                           <NoteContextMenu key={note.id} note={note}>
                             {renamingNoteId === note.id ? (
                               <div className={cn("sidebar-unfiled-row", "is-renaming", selectedId === note.id && "is-selected")}>
-                                <span className="sidebar-unfiled-elbow" aria-hidden="true" />
                                 <div className="sidebar-note-item is-renaming">
                                   <FileText size={15} aria-hidden="true" />
                                   <input
@@ -266,7 +357,6 @@ export function Navigation() {
                               </div>
                             ) : (
                               <div className={cn("sidebar-unfiled-row", selectedId === note.id && "is-selected")}>
-                                <span className="sidebar-unfiled-elbow" aria-hidden="true" />
                                 <div className="sidebar-note-row">
                                   <button
                                     type="button"
