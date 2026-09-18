@@ -93,15 +93,18 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
   const renameFolder = useWorkspaceStore((state) => state.renameFolder);
   const deleteFolder = useWorkspaceStore((state) => state.deleteFolder);
   const pushToast = useWorkspaceStore((state) => state.pushToast);
-  const { createNoteInFolder, moveNoteToFolder } = useNotesActions();
+  const { createNoteInFolder, moveNoteToFolder, savePatch } = useNotesActions();
 
   const [openFolders, setOpenFolders] = useState<Set<string>>(() => new Set(folders.map((folder) => folder.id)));
   const [creating, setCreating] = useState(false);
   const [folderDraft, setFolderDraft] = useState("");
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState("");
+  const [renamingNoteId, setRenamingNoteId] = useState<string | null>(null);
+  const [noteRenameDraft, setNoteRenameDraft] = useState("");
   const createInputRef = useRef<HTMLInputElement>(null);
   const renameInputRef = useRef<HTMLInputElement>(null);
+  const noteRenameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setOpenFolders((current) => {
@@ -133,6 +136,13 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
     renameInputRef.current?.focus();
     renameInputRef.current?.select();
   }, [renamingId]);
+
+
+  useEffect(() => {
+    if (!renamingNoteId) return;
+    noteRenameInputRef.current?.focus();
+    noteRenameInputRef.current?.select();
+  }, [renamingNoteId]);
 
   const activeNotes = useMemo(
     () => notes.filter((note) => !note.isArchived && !note.isDeleted),
@@ -172,6 +182,20 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
     renameFolder(folder.id, name || folder.name);
     setRenamingId(null);
     setRenameDraft("");
+  }
+
+  function beginNoteRename(note: Note) {
+    setSelected(note.id);
+    setRenamingNoteId(note.id);
+    setNoteRenameDraft(getNoteDisplayTitle(note));
+  }
+
+  async function saveNoteRename(note: Note) {
+    const title = noteRenameDraft.trim().slice(0, 120) || "Untitled";
+    setRenamingNoteId(null);
+    setNoteRenameDraft("");
+    if (title === getNoteDisplayTitle(note)) return;
+    await savePatch(note.id, { title });
   }
 
   function removeFolder(folder: NoteFolder) {
@@ -373,23 +397,49 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                           </svg>
 
                           {folderNotes.map((note) => (
-                            <NoteContextMenu key={note.id} note={note}>
+                            <NoteContextMenu key={note.id} note={note} onRename={() => beginNoteRename(note)}>
                               <div className="folder-note-row">
-                                <button
-                                  type="button"
-                                  className={cn("folder-note-item", selectedId === note.id && "is-selected")}
-                                  aria-current={selectedId === note.id ? "page" : undefined}
-                                  draggable={mode === "sidebar"}
-                                  onDragStart={(event) => {
-                                    event.dataTransfer.effectAllowed = "move";
-                                    event.dataTransfer.setData("application/x-notation-note", note.id);
-                                  }}
-                                  onClick={() => setSelected(note.id)}
-                                >
-                                  <FileText size={15} aria-hidden="true" />
-                                  <span>{getNoteDisplayTitle(note)}</span>
-                                  {note.isPinned && <span className="folder-note-pin" aria-label="Pinned">•</span>}
-                                </button>
+                                {renamingNoteId === note.id ? (
+                                  <div className={cn("folder-note-item", "is-renaming", selectedId === note.id && "is-selected")}>
+                                    <FileText size={15} aria-hidden="true" />
+                                    <input
+                                      ref={noteRenameInputRef}
+                                      className="folder-note-rename-input"
+                                      value={noteRenameDraft}
+                                      maxLength={120}
+                                      aria-label={`Rename ${getNoteDisplayTitle(note)}`}
+                                      onChange={(event) => setNoteRenameDraft(event.target.value)}
+                                      onBlur={() => void saveNoteRename(note)}
+                                      onKeyDown={(event) => {
+                                        if (event.key === "Enter") {
+                                          event.preventDefault();
+                                          void saveNoteRename(note);
+                                        } else if (event.key === "Escape") {
+                                          event.preventDefault();
+                                          setRenamingNoteId(null);
+                                          setNoteRenameDraft("");
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    className={cn("folder-note-item", selectedId === note.id && "is-selected")}
+                                    aria-current={selectedId === note.id ? "page" : undefined}
+                                    draggable={mode === "sidebar"}
+                                    onDragStart={(event) => {
+                                      event.dataTransfer.effectAllowed = "move";
+                                      event.dataTransfer.setData("application/x-notation-note", note.id);
+                                    }}
+                                    onClick={() => setSelected(note.id)}
+                                    onDoubleClick={() => beginNoteRename(note)}
+                                  >
+                                    <FileText size={15} aria-hidden="true" />
+                                    <span>{getNoteDisplayTitle(note)}</span>
+                                    {note.isPinned && <span className="folder-note-pin" aria-label="Pinned">•</span>}
+                                  </button>
+                                )}
                               </div>
                             </NoteContextMenu>
                           ))}

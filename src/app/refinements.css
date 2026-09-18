@@ -4883,3 +4883,22 @@ button:active:not(:disabled) {
 .sidebar-tree-section--unfiled:has(.sidebar-unfiled-row.is-selected) .sidebar-tree-heading::after {
   background: #18181b !important;
 }
+
+
+.folder-note-rename-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  outline: none;
+  box-shadow: none;
+}
+
+.folder-note-item.is-renaming {
+  cursor: text;
+}

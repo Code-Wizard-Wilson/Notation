@@ -517,6 +517,13 @@ test("creates branched folders, moves notes, persists them, and preserves notes 
   await movedNote.click();
   await expect(folders.locator(".folder-branch-line-active")).toBeVisible();
 
+  await movedNote.dblclick();
+  const folderNoteRename = folders.getByRole("textbox", { name: "Rename Visual references" });
+  await expect(folderNoteRename).toBeFocused();
+  await folderNoteRename.fill("Folder reference");
+  await folderNoteRename.press("Enter");
+  await expect(folders.locator(".folder-note-item", { hasText: "Folder reference" })).toBeVisible();
+
   await folderHead.click({ button: "right" });
   await page.getByRole("menu", { name: "Actions for Projects" }).getByRole("menuitem", { name: "New note in folder" }).click();
   const folderCreatedTitle = page.locator(".editor-title");
@@ -527,20 +534,20 @@ test("creates branched folders, moves notes, persists them, and preserves notes 
   await page.keyboard.press("Meta+k");
   const folderSearch = page.getByRole("combobox", { name: "Search notes or run a command" });
   await folderSearch.fill("Projects");
-  await expect(page.getByRole("option", { name: /Visual references/ })).toBeVisible();
+  await expect(page.getByRole("option", { name: /Folder reference/ })).toBeVisible();
   await page.keyboard.press("Escape");
 
   await page.reload();
   await expect(page.locator(".workspace-shell")).toBeVisible();
   const reloadedFolders = page.locator(".folder-library--sidebar");
   await expect(reloadedFolders.getByRole("button", { name: /Projects/ }).first()).toBeVisible();
-  await expect(reloadedFolders.locator(".folder-note-item", { hasText: "Visual references" })).toBeVisible();
+  await expect(reloadedFolders.locator(".folder-note-item", { hasText: "Folder reference" })).toBeVisible();
   await expect(reloadedFolders.locator(".folder-note-item", { hasText: "Folder-created note" })).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
   const mobileFolders = page.locator(".folder-library--list");
   await expect(mobileFolders.getByRole("button", { name: /Projects/ }).first()).toBeVisible();
-  await expect(mobileFolders.locator(".folder-note-item", { hasText: "Visual references" })).toBeVisible();
+  await expect(mobileFolders.locator(".folder-note-item", { hasText: "Folder reference" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   await page.setViewportSize({ width: 1440, height: 900 });
 
@@ -558,6 +565,6 @@ test("creates branched folders, moves notes, persists them, and preserves notes 
   await page.getByRole("menu", { name: "Actions for Work" }).getByRole("menuitem", { name: "Delete folder" }).click();
 
   await expect(reloadedFolders.getByRole("button", { name: /Work/ })).toHaveCount(0);
-  await expect(page.locator(".sidebar-note-item", { hasText: "Visual references" })).toBeVisible();
+  await expect(page.locator(".sidebar-note-item", { hasText: "Folder reference" })).toBeVisible();
   await expect(page.locator(".sidebar-note-item", { hasText: "Folder-created note" })).toBeVisible();
 });

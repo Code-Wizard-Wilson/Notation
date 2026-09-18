@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Archive, Copy, CopyPlus, Folder, FolderMinus, Pin, PinOff, RotateCcw, Trash2 } from "lucide-react";
+import { Archive, Copy, CopyPlus, Folder, FolderMinus, Pencil, Pin, PinOff, RotateCcw, Trash2 } from "lucide-react";
 import {
   ContextMenu,
   type ContextMenuItem,
@@ -10,11 +10,28 @@ import { useNotesActions } from "@/hooks/use-notes-actions";
 import { useWorkspaceStore } from "@/store/workspace-store";
 import type { Note } from "@/types/note";
 
-export function NoteContextMenu({ note, children }: { note: Note; children: ReactNode }) {
+export function NoteContextMenu({
+  note,
+  children,
+  onRename,
+}: {
+  note: Note;
+  children: ReactNode;
+  onRename?: () => void;
+}) {
   const folders = useWorkspaceStore((state) => state.folders);
   const { togglePin, archiveNote, restoreNote, trashNote, duplicateNote, moveNoteToFolder, copyNoteLink } = useNotesActions();
 
   const items: ContextMenuItem[] = [];
+
+  if (onRename && !note.isDeleted) {
+    items.push({
+      id: "rename",
+      label: "Rename",
+      icon: <Pencil size={15} />,
+      onSelect: onRename,
+    });
+  }
 
   if (!note.isArchived && !note.isDeleted) {
     items.push({
