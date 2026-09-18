@@ -107,17 +107,6 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
   const noteRenameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setOpenFolders((current) => {
-      const valid = new Set(folders.map((folder) => folder.id));
-      const next = new Set([...current].filter((id) => valid.has(id)));
-      for (const folder of folders) {
-        if (!current.has(folder.id) && folder.id === renamingId) next.add(folder.id);
-      }
-      return next;
-    });
-  }, [folders, renamingId]);
-
-  useEffect(() => {
     if (creating) createInputRef.current?.focus();
   }, [creating]);
 

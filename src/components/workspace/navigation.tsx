@@ -67,7 +67,7 @@ export function Navigation() {
   const setView = useWorkspaceStore((state) => state.setView);
   const setCommandOpen = useWorkspaceStore((state) => state.setCommandOpen);
   const setSettingsOpen = useWorkspaceStore((state) => state.setSettingsOpen);
-  const { createNote, savePatch, restoreNote, deleteForever, togglePin } = useNotesActions();
+  const { createNote, savePatch, deleteForever, togglePin } = useNotesActions();
 
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
   const [deleteAllOpen, setDeleteAllOpen] = useState(false);
@@ -165,16 +165,15 @@ export function Navigation() {
     });
   }
 
-  function handleTouchTap(id: string, title: string, pointerType: string) {
+  function handleTouchTap(id: string, title: string, pointerType: string, eventTime: number) {
     if (pointerType === "mouse") return;
-    const now = Date.now();
     const last = lastTouchTapRef.current;
-    if (last?.id === id && now - last.at <= 340) {
+    if (last?.id === id && eventTime - last.at <= 340) {
       lastTouchTapRef.current = null;
       startNoteRename(id, title);
       return;
     }
-    lastTouchTapRef.current = { id, at: now };
+    lastTouchTapRef.current = { id, at: eventTime };
   }
 
   async function confirmDeleteNote() {
@@ -369,7 +368,7 @@ export function Navigation() {
                                     }}
                                     onClick={() => setSelected(note.id)}
                                     onDoubleClick={() => startNoteRename(note.id, getNoteDisplayTitle(note))}
-                                    onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType)}
+                                    onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType, event.timeStamp)}
                                   >
                                     <FileText size={15} aria-hidden="true" />
                                     <span>{getNoteDisplayTitle(note)}</span>
@@ -468,7 +467,7 @@ export function Navigation() {
                             aria-current={selectedId === note.id ? "page" : undefined}
                             onClick={() => setSelected(note.id)}
                             onDoubleClick={() => startNoteRename(note.id, getNoteDisplayTitle(note))}
-                            onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType)}
+                            onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType, event.timeStamp)}
                           >
                             <span>{getNoteDisplayTitle(note)}</span>
                           </button>

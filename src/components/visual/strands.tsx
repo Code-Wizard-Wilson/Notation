@@ -247,7 +247,28 @@ export default function Strands({
     dispersion,
     glassSize
   });
-  propsRef.current = {
+  useEffect(() => {
+    propsRef.current = {
+      colors,
+      count,
+      speed,
+      amplitude,
+      waviness,
+      thickness,
+      glow,
+      taper,
+      spread,
+      hueShift,
+      intensity,
+      saturation,
+      opacity,
+      scale,
+      glass,
+      refraction,
+      dispersion,
+      glassSize
+    };
+  }, [
     colors,
     count,
     speed,
@@ -266,7 +287,7 @@ export default function Strands({
     refraction,
     dispersion,
     glassSize
-  };
+  ]);
 
   const ctnDom = useRef<HTMLDivElement>(null);
 

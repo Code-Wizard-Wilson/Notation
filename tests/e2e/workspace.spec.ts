@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Note } from "../../src/types/note";
 
 const pixel = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
@@ -418,7 +419,7 @@ test("turns dense soft-break rows into independent draggable blocks", async ({ p
       open.onsuccess = () => resolve(open.result);
       open.onerror = () => reject(open.error);
     });
-    const notes = await new Promise<any[]>((resolve) => {
+    const notes = await new Promise<Note[]>((resolve) => {
       const request = db.transaction("workspace", "readonly").objectStore("workspace").get("notes");
       request.onsuccess = () => resolve(request.result ?? []);
       request.onerror = () => resolve([]);

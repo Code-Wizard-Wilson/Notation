@@ -622,6 +622,13 @@ function EditorDocument({
     [note.id, markdownShortcuts, showHints, EDITOR_SCHEMA_VERSION],
   );
 
+  const canEdit = !note.isDeleted && !readOnly;
+
+  const closeBlockInsertMenu = useCallback(() => {
+    setBlockInsertMenu(null);
+    editor?.commands.setMeta("lockDragHandle", false);
+  }, [editor]);
+
   useEffect(() => {
     return () => {
       if (saveTimer.current) window.clearTimeout(saveTimer.current);
@@ -663,13 +670,8 @@ function EditorDocument({
 
   useEffect(() => {
     if (!editor) return;
-    editor.setEditable(!note.isDeleted && !readOnly);
-    if (readOnly) {
-      setTrigger(null);
-      setDragActive(false);
-      setEmojiPickerOpen(false);
-    }
-  }, [editor, note.isDeleted, readOnly]);
+    editor.setEditable(canEdit);
+  }, [canEdit, editor]);
 
   useEffect(() => {
     if (!editor || !blockMenuOpen) return;
@@ -715,7 +717,7 @@ function EditorDocument({
       window.removeEventListener("pointerdown", close, true);
       window.removeEventListener("keydown", onKeyDown, true);
     };
-  }, [blockInsertMenu, editor]);
+  }, [blockInsertMenu, closeBlockInsertMenu, editor]);
 
   useEffect(() => {
     if (!editor || initialDocument.changed || note.syncState === "saving") return;
@@ -730,8 +732,9 @@ function EditorDocument({
     if (!editor || !focusRequest) return;
     if (!note.title.trim()) titleRef.current?.focus();
     else editor.commands.focus("end");
-    // Omit note.title: a title keystroke used to steal focus into the body.
-  }, [editor, focusRequest]);
+    // Intentionally omit note.title: title keystrokes must not refocus the body.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor, focusRequest, titleRef]);
 
   useEffect(() => {
     if (!editor) return;
@@ -821,7 +824,7 @@ function EditorDocument({
     ];
     const query = trigger.query.toLowerCase();
     return all.filter((item) => `${item.label} ${item.keywords}`.toLowerCase().includes(query));
-  }, [editor, trigger]);
+  }, [editor, pushToast, trigger]);
 
   const noteLinkItems = useMemo(() => {
     if (!editor || trigger?.kind !== "note-link") return [];
@@ -882,11 +885,6 @@ function EditorDocument({
     setBlockTarget(target);
     editor.commands.setMeta("lockDragHandle", true);
     setBlockMenuOpen(true);
-  }
-
-  function closeBlockInsertMenu() {
-    setBlockInsertMenu(null);
-    editor?.commands.setMeta("lockDragHandle", false);
   }
 
   function openBlockInsertMenu(event: React.MouseEvent<HTMLButtonElement>) {
@@ -1001,14 +999,14 @@ function EditorDocument({
       className={cn(
         "editor-pane",
         mobilePane !== "editor" && "mobile-hidden",
-        dragActive && "is-dragging",
+        canEdit && dragActive && "is-dragging",
         readOnly && "is-read-only",
       )}
       onDragEnter={(event: DragEvent) => {
-        if (!readOnly && event.dataTransfer.types.includes("Files")) setDragActive(true);
+        if (canEdit && event.dataTransfer.types.includes("Files")) setDragActive(true);
       }}
       onDragOver={(event: DragEvent) => {
-        if (!readOnly && event.dataTransfer.types.includes("Files")) event.preventDefault();
+        if (canEdit && event.dataTransfer.types.includes("Files")) event.preventDefault();
       }}
       onDragLeave={(event: DragEvent) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragActive(false);
@@ -1024,8 +1022,8 @@ function EditorDocument({
           </Tooltip>
           <span className="editor-context-copy">
             <Popover
-              open={!readOnly && emojiPickerOpen}
-              onOpenChange={(open) => { if (!readOnly) setEmojiPickerOpen(open); }}
+              open={canEdit && emojiPickerOpen}
+              onOpenChange={(open) => { if (canEdit) setEmojiPickerOpen(open); }}
               label="Choose note emoji"
               side="bottom"
               align="start"
@@ -1163,7 +1161,7 @@ function EditorDocument({
             rows={1}
           />
           <EditorContent editor={editor} />
-          {editor && !readOnly && !note.isDeleted && (
+          {editor && canEdit && (
             <DragHandle
               editor={editor}
               className="block-drag-handle"
@@ -1260,7 +1258,7 @@ function EditorDocument({
               </div>
             </section>
           )}
-          {editor && !readOnly && !note.isDeleted && (
+          {editor && canEdit && (
             <>
               <BubbleToolbar editor={editor} />
               <ImageToolbar editor={editor} onRemove={handleImageRemoval} />
@@ -1292,7 +1290,7 @@ function EditorDocument({
       </footer>
 
       <AnimatePresence>
-        {blockInsertMenu && (
+        {canEdit && blockInsertMenu && (
           <EditorMenu
             label="ADD BLOCK"
             items={[
@@ -1314,7 +1312,7 @@ function EditorDocument({
       </AnimatePresence>
 
       <AnimatePresence>
-        {trigger?.kind === "slash" && (
+        {canEdit && trigger?.kind === "slash" && (
           <EditorMenu
             label={slashItems.length ? "BLOCKS" : "NO MATCHING BLOCKS"}
             items={slashItems}
@@ -1322,7 +1320,7 @@ function EditorDocument({
             onClose={dismissTrigger}
           />
         )}
-        {trigger?.kind === "note-link" && (
+        {canEdit && trigger?.kind === "note-link" && (
           <EditorMenu
             label={noteLinkItems.length ? "LINK A NOTE" : "NO MATCHING NOTES"}
             items={noteLinkItems}
@@ -1345,7 +1343,7 @@ function EditorDocument({
         )}
       </AnimatePresence>
 
-      {dragActive && <div className="drop-indicator"><span><FilePlus2 size={18} /> DROP TO INSERT</span></div>}
+      {canEdit && dragActive && <div className="drop-indicator"><span><FilePlus2 size={18} /> DROP TO INSERT</span></div>}
 
       <input
         ref={imageInputRef}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useState, type ComponentType, type SetStateAction } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const EASE = [0.23, 1, 0.32, 1] as const;
@@ -25,13 +25,18 @@ export function EditorMenu({ label, items, position, onClose }: {
   position: { left: number; top: number };
   onClose: () => void;
 }) {
-  const [active, setActive] = useState(0);
-  const reduced = useReducedMotion();
-  const safeActive = Math.min(active, Math.max(0, items.length - 1));
   const itemSignature = items.map((item) => item.id).join("|");
+  const [activeState, setActiveState] = useState({ signature: itemSignature, index: 0 });
+  const reduced = useReducedMotion();
+  const active = activeState.signature === itemSignature ? activeState.index : 0;
+  const safeActive = Math.min(active, Math.max(0, items.length - 1));
 
-  useEffect(() => {
-    setActive(0);
+  const setActive = useCallback((next: SetStateAction<number>) => {
+    setActiveState((current) => {
+      const currentIndex = current.signature === itemSignature ? current.index : 0;
+      const index = typeof next === "function" ? next(currentIndex) : next;
+      return { signature: itemSignature, index };
+    });
   }, [itemSignature]);
 
   useEffect(() => {
@@ -54,7 +59,7 @@ export function EditorMenu({ label, items, position, onClose }: {
     }
     window.addEventListener("keydown", keydown, true);
     return () => window.removeEventListener("keydown", keydown, true);
-  }, [items, onClose, safeActive]);
+  }, [items, onClose, safeActive, setActive]);
 
   return (
     <motion.div
