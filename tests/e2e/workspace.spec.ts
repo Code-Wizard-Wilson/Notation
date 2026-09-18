@@ -254,7 +254,7 @@ test("styles selected text with a local typeface and marker color", async ({ pag
 
 
 test("imports Obsidian-style Markdown notes", async ({ page }) => {
-  await page.locator(".account-control").click();
+  await page.locator(".desktop-navigation").getByRole("button", { name: "Settings" }).click();
   const importer = page.getByLabel("Import Markdown notes");
 
   await importer.setInputFiles([

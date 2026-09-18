@@ -117,14 +117,7 @@ function WorkspaceSkeleton() {
             <span className="skeleton-block skeleton-view-icon" />
             <span className="skeleton-block skeleton-view-icon" />
             <span className="skeleton-block skeleton-view-icon" />
-          </div>
-          <div className="skeleton-account-row">
-            <span className="skeleton-block skeleton-avatar" />
-            <div className="skeleton-account-copy">
-              <span className="skeleton-block" />
-              <span className="skeleton-block" />
-            </div>
-            <span className="skeleton-block skeleton-settings-dot" />
+            <span className="skeleton-block skeleton-view-icon" />
           </div>
         </div>
       </aside>

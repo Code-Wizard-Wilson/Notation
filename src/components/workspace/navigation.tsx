@@ -61,7 +61,6 @@ export function Navigation() {
   const notes = useWorkspaceStore((state) => state.notes);
   const folders = useWorkspaceStore((state) => state.folders);
   const selectedId = useWorkspaceStore((state) => state.selectedNoteId);
-  const user = useWorkspaceStore((state) => state.user);
   const setCollapsed = useWorkspaceStore((state) => state.setSidebarCollapsed);
   const setSelected = useWorkspaceStore((state) => state.setSelectedNoteId);
   const setView = useWorkspaceStore((state) => state.setView);
@@ -529,7 +528,7 @@ export function Navigation() {
 
         <div className="navigation-foot">
           {!collapsed && (
-            <div className="sidebar-view-switcher" aria-label="Note views">
+            <div className="sidebar-view-switcher" aria-label="Note views and settings">
               {entries.map((entry) => {
                 const Icon = entry.icon;
                 return (
@@ -546,6 +545,16 @@ export function Navigation() {
                   </Tooltip>
                 );
               })}
+              <Tooltip label="Settings" side="top">
+                <button
+                  type="button"
+                  className="sidebar-settings-button"
+                  aria-label="Settings"
+                  onClick={() => setSettingsOpen(true)}
+                >
+                  <Settings size={16} />
+                </button>
+              </Tooltip>
             </div>
           )}
 
@@ -560,15 +569,7 @@ export function Navigation() {
                 <Settings size={17} />
               </button>
             </Tooltip>
-          ) : (
-            <Tooltip label="Settings">
-              <button className="account-control" type="button" onClick={() => setSettingsOpen(true)}>
-                <span className="account-avatar">{user?.email.slice(0, 1).toUpperCase()}</span>
-                <span className="account-copy"><strong>Local notes</strong><small>{user?.email}</small></span>
-                <Settings className="account-settings-icon" size={15} />
-              </button>
-            </Tooltip>
-          )}
+          ) : null}
         </div>
       </aside>
 
