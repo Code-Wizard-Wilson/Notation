@@ -14,6 +14,7 @@ import {
   Search,
   Table2,
 } from "lucide-react";
+import Strands from "@/components/visual/strands";
 import { publicPath } from "@/lib/public-path";
 import styles from "./landing.module.css";
 
@@ -165,6 +166,23 @@ export default function LandingPage() {
           variants={reveal}
           transition={{ duration: 0.65, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
         >
+          <div className={styles.strandsBackdrop} aria-hidden="true">
+            <Strands
+              colors={["#c5f367", "#ffffff", "#777777"]}
+              count={4}
+              speed={0.28}
+              amplitude={0.72}
+              waviness={0.9}
+              thickness={0.34}
+              glow={1.8}
+              taper={3.6}
+              spread={0.95}
+              intensity={0.42}
+              saturation={0.7}
+              opacity={0.72}
+              scale={1.45}
+            />
+          </div>
           <div className={styles.openSourceTop}>
             <div>
               <h3>Open source.<br />Fully yours.</h3>

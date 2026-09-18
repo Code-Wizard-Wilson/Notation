@@ -180,3 +180,22 @@
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
 }
+
+.strandsBackdrop {
+  position: absolute;
+  z-index: 0;
+  right: -28%;
+  bottom: -16%;
+  width: 156%;
+  height: 78%;
+  opacity: .82;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 24%, #000 82%, transparent 100%);
+}
+.openSourceTop { position: relative; z-index: 2; }
+.verifiedModel { z-index: 2; }
+
+@media (max-width: 620px) {
+  .strandsBackdrop { right: -58%; bottom: -8%; width: 205%; height: 70%; opacity: .72; }
+}

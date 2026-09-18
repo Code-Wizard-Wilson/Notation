@@ -29,6 +29,10 @@ for (const viewport of [
     await expect(heroImage).toBeVisible();
     await expect.poll(() => heroImage.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
 
+    const strands = page.locator(".strands-container canvas");
+    await strands.scrollIntoViewIfNeeded();
+    await expect(strands).toBeVisible();
+
     const searchImage = page.getByAltText("Notation command palette");
     await searchImage.scrollIntoViewIfNeeded();
     await expect.poll(() => searchImage.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
