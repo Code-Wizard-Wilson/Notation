@@ -495,7 +495,7 @@ test("turns dense soft-break rows into independent draggable blocks", async ({ p
 
 test("creates branched folders, moves notes, persists them, and preserves notes when a folder is deleted", async ({ page }) => {
   const folders = page.locator(".folder-library--sidebar");
-  await folders.getByRole("button", { name: "New folder" }).click();
+  await page.locator(".desktop-navigation").getByRole("button", { name: "New folder" }).click();
 
   const createInput = folders.getByRole("textbox", { name: "Folder name" });
   await createInput.fill("Projects");

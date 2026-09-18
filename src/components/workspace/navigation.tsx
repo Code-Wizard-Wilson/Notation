@@ -5,6 +5,7 @@ import {
   Archive,
   PanelLeft,
   FileText,
+  FolderPlus,
   MoreHorizontal,
   Pin,
   Search,
@@ -70,6 +71,7 @@ export function Navigation() {
     });
 
   const rootVisibleNotes = view === "all" ? visibleNotes.filter((note) => !note.folderId) : visibleNotes;
+  const unfiledActiveIndex = view === "all" ? rootVisibleNotes.findIndex((note) => note.id === selectedId) : -1;
 
   function startNoteRename(id: string, title: string) {
     cancelRenameRef.current = false;
@@ -192,6 +194,18 @@ export function Navigation() {
               <span>{entries.find((entry) => entry.id === view)?.label ?? "Notes"}</span>
               <div className="sidebar-notes-head-actions">
                 <small>{visibleNotes.length}</small>
+                {view === "all" && (
+                  <Tooltip label="New folder" side="top">
+                    <button
+                      type="button"
+                      className="sidebar-new-folder"
+                      aria-label="New folder"
+                      onClick={() => window.dispatchEvent(new CustomEvent("notation:new-folder"))}
+                    >
+                      <FolderPlus size={14} />
+                    </button>
+                  </Tooltip>
+                )}
                 {view === "trash" && visibleNotes.length > 0 && (
                   <Tooltip label="Delete all forever" side="top">
                     <button
@@ -208,11 +222,119 @@ export function Navigation() {
             </div>
 
             <div className="sidebar-notes-scroll">
-              {view === "all" && <FolderTree mode="sidebar" />}
-              {view === "all" && folders.length > 0 && rootVisibleNotes.length > 0 && (
-                <div className="sidebar-root-notes-label">Unfiled</div>
-              )}
-              {rootVisibleNotes.length ? (
+              {view === "all" ? (
+                <>
+                  <FolderTree mode="sidebar" />
+                  {rootVisibleNotes.length > 0 && (
+                    <section className="sidebar-tree-section sidebar-tree-section--unfiled" aria-label="Unfiled notes">
+                      <div className="sidebar-tree-heading">Unfiled</div>
+                      <div className="sidebar-unfiled-tree" style={{ ["--unfiled-count" as string]: rootVisibleNotes.length }}>
+                        <span className="sidebar-unfiled-trunk" aria-hidden="true" />
+                        {unfiledActiveIndex >= 0 && (
+                          <span
+                            className="sidebar-unfiled-active-path"
+                            aria-hidden="true"
+                            style={{ ["--active-row" as string]: unfiledActiveIndex }}
+                          />
+                        )}
+                        {rootVisibleNotes.map((note) => (
+                          <NoteContextMenu key={note.id} note={note}>
+                            {renamingNoteId === note.id ? (
+                              <div className={cn("sidebar-unfiled-row", "is-renaming", selectedId === note.id && "is-selected")}>
+                                <span className="sidebar-unfiled-elbow" aria-hidden="true" />
+                                <div className="sidebar-note-item is-renaming">
+                                  <FileText size={15} aria-hidden="true" />
+                                  <input
+                                    ref={noteNameInputRef}
+                                    className="sidebar-note-rename-input"
+                                    value={noteNameDraft}
+                                    maxLength={120}
+                                    aria-label={`Rename ${getNoteDisplayTitle(note)}`}
+                                    onChange={(event) => setNoteNameDraft(event.target.value)}
+                                    onBlur={() => void saveNoteRename(note.id)}
+                                    onKeyDown={(event) => {
+                                      if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        void saveNoteRename(note.id);
+                                      } else if (event.key === "Escape") {
+                                        event.preventDefault();
+                                        cancelNoteRename();
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <div className={cn("sidebar-unfiled-row", selectedId === note.id && "is-selected")}>
+                                <span className="sidebar-unfiled-elbow" aria-hidden="true" />
+                                <div className="sidebar-note-row">
+                                  <button
+                                    type="button"
+                                    className={cn("sidebar-note-item", selectedId === note.id && "is-selected")}
+                                    aria-current={selectedId === note.id ? "page" : undefined}
+                                    draggable
+                                    onDragStart={(event) => {
+                                      event.dataTransfer.effectAllowed = "move";
+                                      event.dataTransfer.setData("application/x-notation-note", note.id);
+                                    }}
+                                    onClick={() => setSelected(note.id)}
+                                    onDoubleClick={() => startNoteRename(note.id, getNoteDisplayTitle(note))}
+                                    onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType)}
+                                  >
+                                    <FileText size={15} aria-hidden="true" />
+                                    <span>{getNoteDisplayTitle(note)}</span>
+                                  </button>
+                                  {note.isPinned && (
+                                    <span className="sidebar-note-pinned-indicator" aria-label="Pinned note">
+                                      <Pin size={13} fill="currentColor" />
+                                    </span>
+                                  )}
+                                  <div className="sidebar-note-hover-actions" aria-label={`Actions for ${getNoteDisplayTitle(note)}`}>
+                                    <button
+                                      type="button"
+                                      className={cn("sidebar-note-quick-action", note.isPinned && "is-active")}
+                                      aria-label={note.isPinned ? "Unpin note" : "Pin note"}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        event.currentTarget.blur();
+                                        void togglePin(note.id);
+                                      }}
+                                    >
+                                      <Pin size={14} fill={note.isPinned ? "currentColor" : "none"} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="sidebar-note-quick-action"
+                                      aria-label="More actions"
+                                      onClick={(event) => {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        event.currentTarget.blur();
+                                        const rect = event.currentTarget.getBoundingClientRect();
+                                        event.currentTarget.closest(".note-context-anchor")?.dispatchEvent(
+                                          new MouseEvent("contextmenu", {
+                                            bubbles: true,
+                                            cancelable: true,
+                                            clientX: Math.round(rect.right),
+                                            clientY: Math.round(rect.bottom),
+                                          }),
+                                        );
+                                      }}
+                                    >
+                                      <MoreHorizontal size={15} />
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </NoteContextMenu>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                  {visibleNotes.length === 0 && <div className="sidebar-notes-empty">No notes yet</div>}
+                </>
+              ) : rootVisibleNotes.length ? (
                 rootVisibleNotes.map((note) =>
                   view === "trash" ? (
                     <div key={note.id} className="sidebar-note-row">
@@ -254,12 +376,6 @@ export function Navigation() {
                             type="button"
                             className={cn("sidebar-note-item", selectedId === note.id && "is-selected")}
                             aria-current={selectedId === note.id ? "page" : undefined}
-                            draggable={view === "all"}
-                            onDragStart={(event) => {
-                              if (view !== "all") return;
-                              event.dataTransfer.effectAllowed = "move";
-                              event.dataTransfer.setData("application/x-notation-note", note.id);
-                            }}
                             onClick={() => setSelected(note.id)}
                             onDoubleClick={() => startNoteRename(note.id, getNoteDisplayTitle(note))}
                             onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType)}
@@ -313,11 +429,11 @@ export function Navigation() {
                     </NoteContextMenu>
                   ),
                 )
-              ) : visibleNotes.length === 0 ? (
+              ) : (
                 <div className="sidebar-notes-empty">
-                  {view === "pinned" ? "No pinned notes" : view === "archive" ? "Archive is empty" : view === "trash" ? "Trash is empty" : "No notes yet"}
+                  {view === "pinned" ? "No pinned notes" : view === "archive" ? "Archive is empty" : "Trash is empty"}
                 </div>
-              ) : null}
+              )}
             </div>
           </section>
         </nav>

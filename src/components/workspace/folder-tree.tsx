@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FilePlus2, Folder, FolderPlus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { FilePlus2, FileText, Folder, FolderPlus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { ContextMenu, type ContextMenuItem } from "@/components/interior/context-menu";
 import { NoteContextMenu } from "@/components/workspace/note-context-menu";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -14,8 +14,8 @@ type FolderTreeProps = {
   mode?: "sidebar" | "list";
 };
 
-const SIDEBAR_ROW = 36;
-const LIST_ROW = 42;
+const SIDEBAR_ROW = 38;
+const LIST_ROW = 40;
 const PAD = 5;
 const TRUNK = 10;
 const RADIUS = 8;
@@ -113,6 +113,16 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
   }, [creating]);
 
   useEffect(() => {
+    if (mode !== "sidebar") return;
+    const create = () => {
+      setFolderDraft("");
+      setCreating(true);
+    };
+    window.addEventListener("notation:new-folder", create);
+    return () => window.removeEventListener("notation:new-folder", create);
+  }, [mode]);
+
+  useEffect(() => {
     if (!renamingId) return;
     renameInputRef.current?.focus();
     renameInputRef.current?.select();
@@ -125,7 +135,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
 
   const selectedFolderId = activeNotes.find((note) => note.id === selectedId)?.folderId ?? null;
   const rowHeight = mode === "sidebar" ? SIDEBAR_ROW : LIST_ROW;
-  const indent = mode === "sidebar" ? 34 : 38;
+  const indent = mode === "sidebar" ? 44 : 46;
 
   function toggleFolder(id: string) {
     setOpenFolders((current) => {
@@ -185,22 +195,24 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
 
   return (
     <section className={cn("folder-library", `folder-library--${mode}`)} aria-label="Folders">
-      <div className="folder-library-head">
-        <span>Folders</span>
-        <Tooltip label="New folder" side={mode === "sidebar" ? "top" : "bottom"}>
-          <button
-            type="button"
-            className="folder-library-add"
-            aria-label="New folder"
-            onClick={() => {
-              setCreating(true);
-              setFolderDraft("");
-            }}
-          >
-            <FolderPlus size={14} />
-          </button>
-        </Tooltip>
-      </div>
+      {mode === "list" && (
+        <div className="folder-library-head">
+          <span>Folders</span>
+          <Tooltip label="New folder" side="bottom">
+            <button
+              type="button"
+              className="folder-library-add"
+              aria-label="New folder"
+              onClick={() => {
+                setCreating(true);
+                setFolderDraft("");
+              }}
+            >
+              <FolderPlus size={14} />
+            </button>
+          </Tooltip>
+        </div>
+      )}
 
       {creating && (
         <form
@@ -252,7 +264,6 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                 <div className={cn("folder-branch-section", isOpen && "is-open", isActiveFolder && "is-active-folder")}>
                   {renamingId === folder.id ? (
                     <div className="folder-branch-head folder-branch-head--renaming">
-                      <Folder size={14} aria-hidden="true" />
                       <input
                         ref={renameInputRef}
                         className="folder-rename-input"
@@ -293,7 +304,6 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                         aria-expanded={isOpen}
                         onClick={() => toggleFolder(folder.id)}
                       >
-                        <Folder size={14} aria-hidden="true" />
                         <span className="folder-branch-name">{folder.name}</span>
                         <span className="folder-branch-count">{folderNotes.length}</span>
                       </button>
@@ -363,6 +373,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                                   }}
                                   onClick={() => setSelected(note.id)}
                                 >
+                                  <FileText size={15} aria-hidden="true" />
                                   <span>{getNoteDisplayTitle(note)}</span>
                                   {note.isPinned && <span className="folder-note-pin" aria-label="Pinned">•</span>}
                                 </button>
@@ -382,7 +393,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
             );
           })}
         </div>
-      ) : (
+      ) : mode === "list" && !creating ? (
         <button
           type="button"
           className="folder-library-empty"
@@ -393,7 +404,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
         >
           Organize notes into folders
         </button>
-      )}
+      ) : null}
     </section>
   );
 }
