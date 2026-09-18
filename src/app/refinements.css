@@ -5027,3 +5027,91 @@ button:active:not(:disabled) {
     height: 36px;
   }
 }
+
+/* ChatGPT-style long sidebar titles: clean ellipsis first, delayed horizontal reveal on hover. */
+.hover-marquee {
+  --marquee-distance: 0px;
+  --marquee-duration: 2s;
+  position: relative;
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.hover-marquee-static {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: opacity 90ms linear;
+}
+
+.hover-marquee-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: none;
+  opacity: 0;
+  white-space: nowrap;
+  transform: translateX(0);
+  pointer-events: none;
+  transition: opacity 90ms linear;
+}
+
+@keyframes sidebar-title-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-1 * var(--marquee-distance))); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .folder-note-row:hover .hover-marquee[data-overflow="true"] .hover-marquee-static,
+  .sidebar-note-row:hover .hover-marquee[data-overflow="true"] .hover-marquee-static {
+    opacity: 0;
+    transition-delay: 650ms;
+  }
+
+  .folder-note-row:hover .hover-marquee[data-overflow="true"] .hover-marquee-track,
+  .sidebar-note-row:hover .hover-marquee[data-overflow="true"] .hover-marquee-track {
+    opacity: 1;
+    animation: sidebar-title-marquee var(--marquee-duration) 650ms ease-in-out infinite alternate;
+    transition-delay: 650ms;
+  }
+}
+
+@media (min-width: 1100px) {
+  .folder-library--sidebar .folder-note-item,
+  .sidebar-unfiled-row .sidebar-note-item {
+    padding-right: 66px;
+  }
+
+  .folder-library--sidebar .folder-note-item > .hover-marquee,
+  .sidebar-unfiled-row .sidebar-note-item > .hover-marquee {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .folder-library--sidebar .folder-note-item.is-selected > .hover-marquee,
+  .sidebar-unfiled-row .sidebar-note-item.is-selected > .hover-marquee {
+    font-weight: 500;
+  }
+
+  .folder-note-hover-actions,
+  .sidebar-note-hover-actions {
+    padding-left: 12px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), var(--surface) 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-marquee-track {
+    animation: none !important;
+  }
+
+  .hover-marquee-static {
+    opacity: 1 !important;
+  }
+}

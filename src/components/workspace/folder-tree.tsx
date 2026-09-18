@@ -5,6 +5,7 @@ import { FilePlus2, FileText, Folder, FolderPlus, MoreHorizontal, Pencil, Pin, T
 import { ContextMenu, type ContextMenuItem } from "@/components/interior/context-menu";
 import { NoteContextMenu } from "@/components/workspace/note-context-menu";
 import { Tooltip } from "@/components/ui/tooltip";
+import { HoverMarquee } from "@/components/ui/hover-marquee";
 import { useNotesActions } from "@/hooks/use-notes-actions";
 import { cn, getNoteDisplayTitle } from "@/lib/utils";
 import { useWorkspaceStore } from "@/store/workspace-store";
@@ -425,7 +426,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                                     onDoubleClick={() => beginNoteRename(note)}
                                   >
                                     <FileText size={15} aria-hidden="true" />
-                                    <span>{getNoteDisplayTitle(note)}</span>
+                                    <HoverMarquee text={getNoteDisplayTitle(note)} />
                                   </button>
                                 )}
                                 {renamingNoteId !== note.id && note.isPinned && (

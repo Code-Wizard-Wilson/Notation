@@ -18,6 +18,7 @@ import { shortcutLabel, cn, getNoteDisplayTitle } from "@/lib/utils";
 import { useWorkspaceStore } from "@/store/workspace-store";
 import { useNotesActions } from "@/hooks/use-notes-actions";
 import { Tooltip } from "@/components/ui/tooltip";
+import { HoverMarquee } from "@/components/ui/hover-marquee";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { NoteContextMenu } from "@/components/workspace/note-context-menu";
 import { FolderTree } from "@/components/workspace/folder-tree";
@@ -370,7 +371,7 @@ export function Navigation() {
                                     onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType, event.timeStamp)}
                                   >
                                     <FileText size={15} aria-hidden="true" />
-                                    <span>{getNoteDisplayTitle(note)}</span>
+                                    <HoverMarquee text={getNoteDisplayTitle(note)} />
                                   </button>
                                   {note.isPinned && (
                                     <span className="sidebar-note-pinned-indicator" aria-label="Pinned note">
@@ -432,7 +433,7 @@ export function Navigation() {
                         aria-current={selectedId === note.id ? "page" : undefined}
                         onClick={() => setSelected(note.id)}
                       >
-                        <span>{getNoteDisplayTitle(note)}</span>
+                        <HoverMarquee text={getNoteDisplayTitle(note)} />
                       </button>
                     </div>
                   ) : (
@@ -468,7 +469,7 @@ export function Navigation() {
                             onDoubleClick={() => startNoteRename(note.id, getNoteDisplayTitle(note))}
                             onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType, event.timeStamp)}
                           >
-                            <span>{getNoteDisplayTitle(note)}</span>
+                            <HoverMarquee text={getNoteDisplayTitle(note)} />
                           </button>
                           {note.isPinned && !note.isArchived && !note.isDeleted && (
                             <span className="sidebar-note-pinned-indicator" aria-label="Pinned note">

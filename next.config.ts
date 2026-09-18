@@ -5,6 +5,7 @@ const repositoryName = process.env.GITHUB_REPOSITORY?.split("/")[1] || "Notation
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || (isGitHubPages ? `/${repositoryName}` : "");
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   devIndicators: false,
   output: "export",
   trailingSlash: true,

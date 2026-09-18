@@ -494,6 +494,35 @@ test("turns dense soft-break rows into independent draggable blocks", async ({ p
   expect(persistedUpdatedAt).toBe(originalUpdatedAt);
 });
 
+
+
+test("keeps long sidebar titles clear of actions and reveals them after a hover delay", async ({ page }) => {
+  await page.keyboard.press("Meta+d");
+  const title = page.locator(".editor-title");
+  const longTitle = "A very long Notation note title that should reveal itself on hover";
+  await title.fill(longTitle);
+  await title.press("Enter");
+
+  const row = page.locator(".sidebar-unfiled-row", { hasText: longTitle });
+  const marquee = row.locator(".hover-marquee");
+  await expect(marquee).toHaveAttribute("data-overflow", "true");
+
+  await row.hover();
+  const titleBox = await marquee.boundingBox();
+  const actionsBox = await row.locator(".sidebar-note-hover-actions").boundingBox();
+  expect(titleBox).not.toBeNull();
+  expect(actionsBox).not.toBeNull();
+  expect((titleBox?.x ?? 0) + (titleBox?.width ?? 0)).toBeLessThanOrEqual((actionsBox?.x ?? 0) - 2);
+
+  const track = marquee.locator(".hover-marquee-track");
+  await page.waitForTimeout(820);
+  await expect(track).toHaveCSS("opacity", "1");
+  const firstTransform = await track.evaluate((node) => getComputedStyle(node).transform);
+  await page.waitForTimeout(500);
+  const secondTransform = await track.evaluate((node) => getComputedStyle(node).transform);
+  expect(firstTransform).not.toBe(secondTransform);
+});
+
 test("creates branched folders, moves notes, persists them, and preserves notes when a folder is deleted", async ({ page }) => {
   const folders = page.locator(".folder-library--sidebar");
   await page.locator(".desktop-navigation").getByRole("button", { name: "New folder" }).click();
