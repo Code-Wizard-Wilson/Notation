@@ -29,6 +29,17 @@ for (const viewport of [
     await expect(heroImage).toBeVisible();
     await expect.poll(() => heroImage.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0)).toBe(true);
 
+    const seal = page.locator('[class*="verifiedSeal"]');
+    const sourceCard = page.locator('[class*="openSourceCard"]');
+    const centered = await Promise.all([seal.boundingBox(), sourceCard.boundingBox()]);
+    expect(centered[0]).not.toBeNull();
+    expect(centered[1]).not.toBeNull();
+    if (centered[0] && centered[1]) {
+      const sealCenter = centered[0].y + centered[0].height / 2;
+      const cardCenter = centered[1].y + centered[1].height / 2;
+      expect(Math.abs(sealCenter - cardCenter)).toBeLessThanOrEqual(2);
+    }
+
     const strands = page.locator(".strands-container canvas");
     await strands.scrollIntoViewIfNeeded();
     await expect(strands).toBeVisible();

@@ -80,10 +80,11 @@
 .shotFrame { position: absolute; right: 10px; bottom: 0; left: 10px; display: grid; height: 390px; place-items: end center; overflow: hidden; background: transparent; }
 .searchShot { display: block; width: auto; max-width: 88%; height: 100%; object-fit: contain; object-position: center bottom; transform: translateY(-12px); }
 
-.openSourceCard { background: #171717; color: #fff; }
+.openSourceCard { display: grid; background: #171717; color: #fff; }
+.openSourceTop { grid-area: 1 / 1; align-self: start; }
 .openSourceTop h3 { margin: 0; font-size: clamp(28px, 3vw, 42px); font-weight: 560; line-height: 1.02; letter-spacing: -.05em; }
 .openSourceTop p { max-width: 300px; margin: 16px 0 0; color: #9a9a96; font-size: 14px; line-height: 1.55; }
-.verifiedModel { position: absolute; right: 0; bottom: 40px; left: 0; display: grid; place-items: center; color: #fff; }
+.verifiedModel { position: relative; z-index: 2; grid-area: 1 / 1; align-self: center; justify-self: center; display: grid; place-items: center; color: #fff; pointer-events: none; }
 .verifiedSeal { display: block; width: 112px; height: 112px; overflow: visible; filter: drop-shadow(0 18px 34px rgba(0,0,0,.24)); }
 .verifiedRingSpin { transform-box: fill-box; transform-origin: center; animation: verifiedSealSpin 8s linear infinite; }
 .verifiedRing { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
@@ -149,7 +150,6 @@
   .bento { width: calc(100% - 24px); gap: 12px; }
   .bentoCard { min-height: 500px; border-radius: 20px; padding: 22px; }
   .openSourceCard { min-height: 540px; }
-  .verifiedModel { bottom: 32px; }
   .verifiedSeal { width: 96px; height: 96px; }
   .cardHead h3 { font-size: 31px; }.bentoCard > p { font-size: 13px; }
   .shotFrame { right: -25%; left: 5%; height: 310px; }
