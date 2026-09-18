@@ -522,7 +522,12 @@ test("creates branched folders, moves notes, persists them, and preserves notes 
   await expect(folderNoteRename).toBeFocused();
   await folderNoteRename.fill("Folder reference");
   await folderNoteRename.press("Enter");
-  await expect(folders.locator(".folder-note-item", { hasText: "Folder reference" })).toBeVisible();
+  const renamedFolderNote = folders.locator(".folder-note-item", { hasText: "Folder reference" });
+  await expect(renamedFolderNote).toBeVisible();
+  await renamedFolderNote.hover();
+  const folderRow = renamedFolderNote.locator("xpath=ancestor::*[contains(@class, 'folder-note-row')]");
+  await expect(folderRow.getByRole("button", { name: "Pin note" })).toBeVisible();
+  await expect(folderRow.getByRole("button", { name: "More actions" })).toBeVisible();
 
   await folderHead.click({ button: "right" });
   await page.getByRole("menu", { name: "Actions for Projects" }).getByRole("menuitem", { name: "New note in folder" }).click();

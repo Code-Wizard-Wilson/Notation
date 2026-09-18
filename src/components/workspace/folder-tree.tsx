@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FilePlus2, FileText, Folder, FolderPlus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { FilePlus2, FileText, Folder, FolderPlus, MoreHorizontal, Pencil, Pin, Trash2 } from "lucide-react";
 import { ContextMenu, type ContextMenuItem } from "@/components/interior/context-menu";
 import { NoteContextMenu } from "@/components/workspace/note-context-menu";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -93,7 +93,7 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
   const renameFolder = useWorkspaceStore((state) => state.renameFolder);
   const deleteFolder = useWorkspaceStore((state) => state.deleteFolder);
   const pushToast = useWorkspaceStore((state) => state.pushToast);
-  const { createNoteInFolder, moveNoteToFolder, savePatch } = useNotesActions();
+  const { createNoteInFolder, moveNoteToFolder, savePatch, togglePin } = useNotesActions();
 
   const [openFolders, setOpenFolders] = useState<Set<string>>(() => new Set(folders.map((folder) => folder.id)));
   const [creating, setCreating] = useState(false);
@@ -437,8 +437,49 @@ export function FolderTree({ mode = "sidebar" }: FolderTreeProps) {
                                   >
                                     <FileText size={15} aria-hidden="true" />
                                     <span>{getNoteDisplayTitle(note)}</span>
-                                    {note.isPinned && <span className="folder-note-pin" aria-label="Pinned">•</span>}
                                   </button>
+                                )}
+                                {renamingNoteId !== note.id && note.isPinned && (
+                                  <span className="folder-note-pinned-indicator" aria-label="Pinned note">
+                                    <Pin size={13} fill="currentColor" />
+                                  </span>
+                                )}
+                                {renamingNoteId !== note.id && (
+                                  <div className="folder-note-hover-actions" aria-label={`Actions for ${getNoteDisplayTitle(note)}`}>
+                                    <button
+                                      type="button"
+                                      className={cn("folder-note-quick-action", note.isPinned && "is-active")}
+                                      aria-label={note.isPinned ? "Unpin note" : "Pin note"}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        event.currentTarget.blur();
+                                        void togglePin(note.id);
+                                      }}
+                                    >
+                                      <Pin size={14} fill={note.isPinned ? "currentColor" : "none"} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="folder-note-quick-action"
+                                      aria-label="More actions"
+                                      onClick={(event) => {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        event.currentTarget.blur();
+                                        const rect = event.currentTarget.getBoundingClientRect();
+                                        event.currentTarget.closest(".note-context-anchor")?.dispatchEvent(
+                                          new MouseEvent("contextmenu", {
+                                            bubbles: true,
+                                            cancelable: true,
+                                            clientX: Math.round(rect.right),
+                                            clientY: Math.round(rect.bottom),
+                                          }),
+                                        );
+                                      }}
+                                    >
+                                      <MoreHorizontal size={15} />
+                                    </button>
+                                  </div>
                                 )}
                               </div>
                             </NoteContextMenu>

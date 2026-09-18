@@ -4902,3 +4902,71 @@ button:active:not(:disabled) {
 .folder-note-item.is-renaming {
   cursor: text;
 }
+
+/* Folder child hover controls mirror Unfiled: pin + overflow appear only on actual row hover. */
+.folder-note-row {
+  position: relative;
+}
+
+.folder-note-pinned-indicator {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  color: #111113;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 80ms ease;
+}
+
+.folder-note-hover-actions {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 100ms ease;
+}
+
+.folder-note-row:hover .folder-note-hover-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.folder-note-row:hover .folder-note-pinned-indicator {
+  opacity: 0;
+}
+
+.folder-note-quick-action {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 7px;
+  padding: 0;
+  background: transparent;
+  color: #66666d;
+}
+
+.folder-note-quick-action:hover,
+.folder-note-quick-action:focus-visible {
+  background: rgba(28, 28, 30, 0.08);
+  color: #1f1f22;
+}
+
+.folder-note-quick-action.is-active {
+  color: #1f1f22;
+}
+
+@media (hover: none) {
+  .folder-note-hover-actions {
+    display: none;
+  }
+}
