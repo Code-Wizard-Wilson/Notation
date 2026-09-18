@@ -4,6 +4,7 @@ import { Archive, FileText, Pin, Plus, Search, Trash2 } from "lucide-react";
 import { useWorkspaceStore } from "@/store/workspace-store";
 import { useNotesActions } from "@/hooks/use-notes-actions";
 import { NoteRow } from "@/components/workspace/note-row";
+import { FolderTree } from "@/components/workspace/folder-tree";
 
 const viewCopy = {
   all: {
@@ -59,8 +60,9 @@ export function NotesList() {
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
 
-  const pinned = view === "all" ? visible.filter((note) => note.isPinned) : [];
-  const regular = view === "all" ? visible.filter((note) => !note.isPinned) : visible;
+  const rootVisible = view === "all" ? visible.filter((note) => !note.folderId) : visible;
+  const pinned = view === "all" ? rootVisible.filter((note) => note.isPinned) : [];
+  const regular = view === "all" ? rootVisible.filter((note) => !note.isPinned) : rootVisible;
   const copy = viewCopy[view];
   const EmptyIcon = copy.icon;
 
@@ -79,8 +81,9 @@ export function NotesList() {
       <div className="notes-count"><span>{visible.length}</span> {visible.length === 1 ? "NOTE" : "NOTES"}</div>
 
       <div className="notes-scroll">
-        {visible.length ? (
+        {visible.length || view === "all" ? (
           <>
+            {view === "all" && <FolderTree mode="list" />}
             {pinned.length > 0 && (
               <section className="note-group">
                 <p className="note-group-label">PINNED</p>
@@ -93,6 +96,21 @@ export function NotesList() {
                 {regular.map((note) => <NoteRow key={note.id} note={note} />)}
               </section>
             )}
+            {visible.length === 0 && (
+              <div className="list-empty">
+                <span className="list-empty-icon" aria-hidden="true"><EmptyIcon size={18} /></span>
+                <h2>{copy.emptyTitle}</h2>
+                <p>{copy.emptyBody}</p>
+                <button
+                  type="button"
+                  className="list-empty-primary"
+                  onClick={createNote}
+                >
+                  <Plus size={15} />
+                  {copy.emptyAction}
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <div className="list-empty">
@@ -101,13 +119,9 @@ export function NotesList() {
             <p>{copy.emptyBody}</p>
             <button
               type="button"
-              className={view === "all" ? "list-empty-primary" : "list-empty-secondary"}
-              onClick={() => {
-                if (view === "all") createNote();
-                else setView("all");
-              }}
+              className="list-empty-secondary"
+              onClick={() => setView("all")}
             >
-              {view === "all" && <Plus size={15} />}
               {copy.emptyAction}
             </button>
           </div>

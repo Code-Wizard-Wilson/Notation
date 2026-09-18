@@ -2,8 +2,8 @@
 
 import { create } from "zustand";
 import { EMPTY_DOCUMENT, SIDEBAR_KEY } from "@/lib/constants";
-import { readLocalNotes, writeLocalNotes } from "@/lib/data/local";
-import type { Note, NotesView, ToastMessage, WorkspaceUser } from "@/types/note";
+import { readLocalFolders, readLocalNotes, writeLocalFolders, writeLocalNotes } from "@/lib/data/local";
+import type { Note, NoteFolder, NotesView, ToastMessage, WorkspaceUser } from "@/types/note";
 
 type MobilePane = "list" | "editor";
 
@@ -11,6 +11,7 @@ type WorkspaceState = {
   initialized: boolean;
   user: WorkspaceUser | null;
   notes: Note[];
+  folders: NoteFolder[];
   selectedNoteId: string | null;
   view: NotesView;
   sidebarCollapsed: boolean;
@@ -26,6 +27,10 @@ type WorkspaceState = {
   setSyncState: (id: string, state: Note["syncState"]) => void;
   removeNote: (id: string) => void;
   receiveNote: (note: Note) => void;
+  createFolder: (name?: string) => NoteFolder;
+  renameFolder: (id: string, name: string) => NoteFolder | undefined;
+  deleteFolder: (id: string) => void;
+  moveNoteToFolder: (noteId: string, folderId: string | null) => Note | undefined;
   setSelectedNoteId: (id: string | null, openEditor?: boolean) => void;
   setView: (view: NotesView) => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
@@ -42,6 +47,10 @@ function persistNotes(state: Pick<WorkspaceState, "notes">) {
   writeLocalNotes(state.notes);
 }
 
+function persistFolders(state: Pick<WorkspaceState, "folders">) {
+  writeLocalFolders(state.folders);
+}
+
 function notesInView(notes: Note[], view: NotesView) {
   return notes.filter((note) => {
     if (view === "pinned") return note.isPinned && !note.isArchived && !note.isDeleted;
@@ -55,6 +64,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   initialized: false,
   user: null,
   notes: [],
+  folders: [],
   selectedNoteId: null,
   view: "all",
   sidebarCollapsed: false,
@@ -65,7 +75,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   editorFocusRequest: 0,
   toasts: [],
   async initialize(notes, user) {
-    const hydratedNotes = await readLocalNotes(notes);
+    const [hydratedNotes, hydratedFolders] = await Promise.all([readLocalNotes(notes), readLocalFolders()]);
+    const folderIds = new Set(hydratedFolders.map((folder) => folder.id));
+    const normalizedNotes = hydratedNotes.map((note) =>
+      note.folderId && !folderIds.has(note.folderId) ? { ...note, folderId: null } : note,
+    );
+    if (normalizedNotes.some((note, index) => note !== hydratedNotes[index])) writeLocalNotes(normalizedNotes);
+
     const storedSidebar =
       typeof window !== "undefined" && window.localStorage.getItem(SIDEBAR_KEY) === "true";
     const requestedNote =
@@ -73,13 +89,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         ? new URLSearchParams(window.location.search).get("note")
         : null;
     const selected =
-      (requestedNote && hydratedNotes.some((note) => note.id === requestedNote)
+      (requestedNote && normalizedNotes.some((note) => note.id === requestedNote)
         ? requestedNote
-        : hydratedNotes.find((note) => !note.isArchived && !note.isDeleted)?.id) ?? null;
+        : normalizedNotes.find((note) => !note.isArchived && !note.isDeleted)?.id) ?? null;
 
     set({
       initialized: true,
-      notes: hydratedNotes,
+      notes: normalizedNotes,
+      folders: hydratedFolders,
       user,
       selectedNoteId: selected,
       sidebarCollapsed: storedSidebar,
@@ -136,6 +153,53 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       };
     });
   },
+  createFolder(name = "New folder") {
+    const now = new Date().toISOString();
+    const folder: NoteFolder = {
+      id: crypto.randomUUID(),
+      name: name.trim().slice(0, 80) || "New folder",
+      createdAt: now,
+      updatedAt: now,
+    };
+    set((state) => ({ folders: [...state.folders, folder] }));
+    persistFolders(get());
+    return folder;
+  },
+  renameFolder(id, name) {
+    let updated: NoteFolder | undefined;
+    const nextName = name.trim().slice(0, 80) || "Untitled folder";
+    set((state) => ({
+      folders: state.folders.map((folder) => {
+        if (folder.id !== id) return folder;
+        updated = { ...folder, name: nextName, updatedAt: new Date().toISOString() };
+        return updated;
+      }),
+    }));
+    persistFolders(get());
+    return updated;
+  },
+  deleteFolder(id) {
+    set((state) => ({
+      folders: state.folders.filter((folder) => folder.id !== id),
+      notes: state.notes.map((note) => (note.folderId === id ? { ...note, folderId: null } : note)),
+    }));
+    persistFolders(get());
+    persistNotes(get());
+  },
+  moveNoteToFolder(noteId, folderId) {
+    let updated: Note | undefined;
+    const validFolder = folderId === null || get().folders.some((folder) => folder.id === folderId);
+    if (!validFolder) return undefined;
+    set((state) => ({
+      notes: state.notes.map((note) => {
+        if (note.id !== noteId) return note;
+        updated = { ...note, folderId };
+        return updated;
+      }),
+    }));
+    persistNotes(get());
+    return updated;
+  },
   setSelectedNoteId(id, openEditor = true) {
     const previousPane = get().mobilePane;
     set({ selectedNoteId: id, mobilePane: openEditor && id ? "editor" : get().mobilePane });
@@ -189,13 +253,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 }));
 
-export function createEmptyNote(userId: string): Note {
+export function createEmptyNote(userId: string, folderId: string | null = null): Note {
   const now = new Date().toISOString();
   return {
     id: crypto.randomUUID(),
     userId,
     title: "",
     emoji: "🐶",
+    folderId,
     content: EMPTY_DOCUMENT,
     plainTextContent: "",
     isPinned: false,

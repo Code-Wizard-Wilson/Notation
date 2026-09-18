@@ -19,6 +19,7 @@ import { useNotesActions } from "@/hooks/use-notes-actions";
 import { Tooltip } from "@/components/ui/tooltip";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { NoteContextMenu } from "@/components/workspace/note-context-menu";
+import { FolderTree } from "@/components/workspace/folder-tree";
 import type { NotesView } from "@/types/note";
 
 const entries: Array<{ id: NotesView; label: string; icon: typeof FileText }> = [
@@ -32,6 +33,7 @@ export function Navigation() {
   const collapsed = useWorkspaceStore((state) => state.sidebarCollapsed);
   const view = useWorkspaceStore((state) => state.view);
   const notes = useWorkspaceStore((state) => state.notes);
+  const folders = useWorkspaceStore((state) => state.folders);
   const selectedId = useWorkspaceStore((state) => state.selectedNoteId);
   const user = useWorkspaceStore((state) => state.user);
   const setCollapsed = useWorkspaceStore((state) => state.setSidebarCollapsed);
@@ -66,6 +68,8 @@ export function Navigation() {
       if (view === "all" && a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
+
+  const rootVisibleNotes = view === "all" ? visibleNotes.filter((note) => !note.folderId) : visibleNotes;
 
   function startNoteRename(id: string, title: string) {
     cancelRenameRef.current = false;
@@ -204,8 +208,12 @@ export function Navigation() {
             </div>
 
             <div className="sidebar-notes-scroll">
-              {visibleNotes.length ? (
-                visibleNotes.map((note) =>
+              {view === "all" && <FolderTree mode="sidebar" />}
+              {view === "all" && folders.length > 0 && rootVisibleNotes.length > 0 && (
+                <div className="sidebar-root-notes-label">Unfiled</div>
+              )}
+              {rootVisibleNotes.length ? (
+                rootVisibleNotes.map((note) =>
                   view === "trash" ? (
                     <div key={note.id} className="sidebar-note-row">
                       <button
@@ -246,6 +254,12 @@ export function Navigation() {
                             type="button"
                             className={cn("sidebar-note-item", selectedId === note.id && "is-selected")}
                             aria-current={selectedId === note.id ? "page" : undefined}
+                            draggable={view === "all"}
+                            onDragStart={(event) => {
+                              if (view !== "all") return;
+                              event.dataTransfer.effectAllowed = "move";
+                              event.dataTransfer.setData("application/x-notation-note", note.id);
+                            }}
                             onClick={() => setSelected(note.id)}
                             onDoubleClick={() => startNoteRename(note.id, getNoteDisplayTitle(note))}
                             onPointerUp={(event) => handleTouchTap(note.id, getNoteDisplayTitle(note), event.pointerType)}
@@ -299,11 +313,11 @@ export function Navigation() {
                     </NoteContextMenu>
                   ),
                 )
-              ) : (
+              ) : visibleNotes.length === 0 ? (
                 <div className="sidebar-notes-empty">
                   {view === "pinned" ? "No pinned notes" : view === "archive" ? "Archive is empty" : view === "trash" ? "Trash is empty" : "No notes yet"}
                 </div>
-              )}
+              ) : null}
             </div>
           </section>
         </nav>

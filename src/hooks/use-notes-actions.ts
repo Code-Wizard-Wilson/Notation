@@ -33,16 +33,19 @@ export function useNotesActions() {
     return true;
   }, []);
 
-  const createNote = useCallback(() => {
+  const createNoteForFolder = useCallback((folderId: string | null) => {
     if (!user) return null;
     const store = useWorkspaceStore.getState();
-    const note = createEmptyNote(user.id);
+    const note = createEmptyNote(user.id, folderId);
     store.setView("all");
     store.addNote(note);
     store.requestEditorFocus();
     void sync(note);
     return note.id;
   }, [sync, user]);
+
+  const createNote = useCallback(() => createNoteForFolder(null), [createNoteForFolder]);
+  const createNoteInFolder = useCallback((folderId: string) => createNoteForFolder(folderId), [createNoteForFolder]);
 
   const savePatch = useCallback(
     async (id: string, patch: Partial<Note>, touch = true) => {
@@ -289,6 +292,20 @@ export function useNotesActions() {
     [sync, user],
   );
 
+
+  const moveNoteToFolder = useCallback(
+    async (id: string, folderId: string | null) => {
+      const store = useWorkspaceStore.getState();
+      const updated = store.moveNoteToFolder(id, folderId);
+      if (!updated) return false;
+      await sync(updated);
+      const folderName = folderId ? store.folders.find((folder) => folder.id === folderId)?.name : null;
+      store.pushToast({ title: folderName ? `Moved to ${folderName}` : "Removed from folder" });
+      return true;
+    },
+    [sync],
+  );
+
   const copyNoteLink = useCallback(async (id: string) => {
     const url = new URL(window.location.href);
     url.search = "";
@@ -299,6 +316,7 @@ export function useNotesActions() {
 
   return {
     createNote,
+    createNoteInFolder,
     importMarkdownFiles,
     savePatch,
     syncSnapshot,
@@ -310,6 +328,7 @@ export function useNotesActions() {
     addAttachment,
     removeAttachment,
     duplicateNote,
+    moveNoteToFolder,
     copyNoteLink,
   };
 }

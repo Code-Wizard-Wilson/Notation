@@ -492,3 +492,72 @@ test("turns dense soft-break rows into independent draggable blocks", async ({ p
   });
   expect(persistedUpdatedAt).toBe(originalUpdatedAt);
 });
+
+test("creates branched folders, moves notes, persists them, and preserves notes when a folder is deleted", async ({ page }) => {
+  const folders = page.locator(".folder-library--sidebar");
+  await folders.getByRole("button", { name: "New folder" }).click();
+
+  const createInput = folders.getByRole("textbox", { name: "Folder name" });
+  await createInput.fill("Projects");
+  await createInput.press("Enter");
+
+  const folderHead = folders.getByRole("button", { name: /Projects/ }).first();
+  await expect(folderHead).toBeVisible();
+  await expect(folderHead).toHaveAttribute("aria-expanded", "true");
+
+  const sourceNote = page.locator(".sidebar-note-item", { hasText: "Visual references" });
+  await sourceNote.click({ button: "right" });
+  const noteMenu = page.getByRole("menu", { name: /Actions for Visual references/ });
+  await expect(noteMenu).toBeVisible();
+  await noteMenu.getByRole("menuitem", { name: "Move to · Projects" }).click();
+
+  await expect(page.locator(".sidebar-note-item", { hasText: "Visual references" })).toHaveCount(0);
+  const movedNote = folders.locator(".folder-note-item", { hasText: "Visual references" });
+  await expect(movedNote).toBeVisible();
+  await movedNote.click();
+  await expect(folders.locator(".folder-branch-line-active")).toBeVisible();
+
+  await folderHead.click({ button: "right" });
+  await page.getByRole("menu", { name: "Actions for Projects" }).getByRole("menuitem", { name: "New note in folder" }).click();
+  const folderCreatedTitle = page.locator(".editor-title");
+  await expect(folderCreatedTitle).toBeFocused();
+  await folderCreatedTitle.fill("Folder-created note");
+  await expect(folders.locator(".folder-note-item", { hasText: "Folder-created note" })).toBeVisible();
+
+  await page.keyboard.press("Meta+k");
+  const folderSearch = page.getByRole("combobox", { name: "Search notes or run a command" });
+  await folderSearch.fill("Projects");
+  await expect(page.getByRole("option", { name: /Visual references/ })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  await page.reload();
+  await expect(page.locator(".workspace-shell")).toBeVisible();
+  const reloadedFolders = page.locator(".folder-library--sidebar");
+  await expect(reloadedFolders.getByRole("button", { name: /Projects/ }).first()).toBeVisible();
+  await expect(reloadedFolders.locator(".folder-note-item", { hasText: "Visual references" })).toBeVisible();
+  await expect(reloadedFolders.locator(".folder-note-item", { hasText: "Folder-created note" })).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const mobileFolders = page.locator(".folder-library--list");
+  await expect(mobileFolders.getByRole("button", { name: /Projects/ }).first()).toBeVisible();
+  await expect(mobileFolders.locator(".folder-note-item", { hasText: "Visual references" })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  const reloadedHead = reloadedFolders.getByRole("button", { name: /Projects/ }).first();
+  await reloadedHead.click({ button: "right" });
+  const folderMenu = page.getByRole("menu", { name: "Actions for Projects" });
+  await folderMenu.getByRole("menuitem", { name: "Rename folder" }).click();
+
+  const renameInput = reloadedFolders.getByRole("textbox", { name: "Rename Projects" });
+  await renameInput.fill("Work");
+  await renameInput.press("Enter");
+  await expect(reloadedFolders.getByRole("button", { name: /Work/ }).first()).toBeVisible();
+
+  await reloadedFolders.getByRole("button", { name: /Work/ }).first().click({ button: "right" });
+  await page.getByRole("menu", { name: "Actions for Work" }).getByRole("menuitem", { name: "Delete folder" }).click();
+
+  await expect(reloadedFolders.getByRole("button", { name: /Work/ })).toHaveCount(0);
+  await expect(page.locator(".sidebar-note-item", { hasText: "Visual references" })).toBeVisible();
+  await expect(page.locator(".sidebar-note-item", { hasText: "Folder-created note" })).toBeVisible();
+});

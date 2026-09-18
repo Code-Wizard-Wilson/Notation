@@ -27,6 +27,7 @@ const iconProps = { size: 18, strokeWidth: 1.7 } as const;
 export function CommandPalette() {
   const open = useWorkspaceStore((state) => state.commandOpen);
   const notes = useWorkspaceStore((state) => state.notes);
+  const folders = useWorkspaceStore((state) => state.folders);
   const selectedId = useWorkspaceStore((state) => state.selectedNoteId);
   const setOpen = useWorkspaceStore((state) => state.setCommandOpen);
   const setSelected = useWorkspaceStore((state) => state.setSelectedNoteId);
@@ -46,7 +47,8 @@ export function CommandPalette() {
 
     for (const note of recent) {
       const id = `note:${note.id}`;
-      const state = note.isArchived ? "Archive" : note.isPinned ? "Pinned" : "Note";
+      const folderName = note.folderId ? folders.find((folder) => folder.id === note.folderId)?.name : null;
+      const state = note.isArchived ? "Archive" : note.isPinned ? "Pinned" : folderName ?? "Note";
       const Icon = note.isArchived ? Archive : note.isPinned ? Pin : FileText;
       next.push({
         id,
@@ -57,6 +59,7 @@ export function CommandPalette() {
         keywords: [
           getNoteDisplayTitle(note),
           note.plainTextContent,
+          folderName ?? "",
           note.attachments.map((attachment) => attachment.filename).join(" "),
         ].join(" "),
       });
@@ -173,7 +176,7 @@ export function CommandPalette() {
     );
 
     return { items: next, actions: actionMap };
-  }, [archiveNote, copyNoteLink, createNote, current, notes, restoreNote, setSelected, setSettingsOpen, setView, togglePin, trashNote]);
+  }, [archiveNote, copyNoteLink, createNote, current, folders, notes, restoreNote, setSelected, setSettingsOpen, setView, togglePin, trashNote]);
 
   return (
     <InteriorCommandPalette

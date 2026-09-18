@@ -3511,3 +3511,462 @@ button:active:not(:disabled) {
   margin: 0 1px;
   background: #e7e5e4;
 }
+
+/* Folder library: a quiet branched tree inspired by the user's React Bits reference. */
+.folder-library {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.folder-library-head {
+  display: flex;
+  min-height: 26px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7px 5px;
+  color: var(--ink-tertiary);
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.folder-library-add {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 7px;
+  padding: 0;
+  background: transparent;
+  color: #8b8783;
+  opacity: 0.8;
+  transition: background-color 120ms var(--ease-out), color 120ms var(--ease-out), opacity 120ms ease;
+}
+
+.folder-library-add:hover,
+.folder-library-add:focus-visible {
+  background: rgba(28, 28, 30, 0.06);
+  color: #27272a;
+  opacity: 1;
+}
+
+.folder-create-row {
+  display: flex;
+  height: 34px;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 2px 14px;
+  padding: 0 8px;
+  border-radius: 9px;
+  background: rgba(28, 28, 30, 0.045);
+  color: #71717a;
+}
+
+.folder-create-row input,
+.folder-rename-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  outline: 0;
+  box-shadow: none;
+}
+
+.folder-create-row input::placeholder {
+  color: #a8a29e;
+}
+
+.folder-library-empty {
+  margin-left: 14px;
+  padding: 8px 8px 9px;
+  border-radius: 9px;
+  background: transparent;
+  color: #8b8783;
+  font-size: 11px;
+  text-align: left;
+}
+
+.folder-library-empty:hover,
+.folder-library-empty:focus-visible {
+  background: rgba(28, 28, 30, 0.045);
+  color: #52525b;
+}
+
+.folder-branch-menu {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: 14px;
+}
+
+.folder-branch-menu::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  bottom: 4px;
+  left: 3px;
+  width: 1.5px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #d6d6da 0%, #d6d6da 68%, rgba(214, 214, 218, 0) 100%);
+  pointer-events: none;
+}
+
+.folder-context-anchor {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.folder-branch-section {
+  min-width: 0;
+}
+
+.folder-branch-head-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.folder-branch-head {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  align-items: center;
+  gap: 7px;
+  border-radius: 9px;
+  padding: 0 48px 0 7px;
+  background: transparent;
+  color: #77737a;
+  text-align: left;
+  transition: color 160ms ease, background-color 120ms var(--ease-out);
+}
+
+.folder-branch-head > svg {
+  flex: 0 0 auto;
+  color: #8d8990;
+  transition: color 160ms ease;
+}
+
+.folder-branch-section.is-open .folder-branch-head,
+.folder-branch-section.is-active-folder .folder-branch-head {
+  color: #27272a;
+}
+
+.folder-branch-section.is-open .folder-branch-head > svg,
+.folder-branch-section.is-active-folder .folder-branch-head > svg {
+  color: #52525b;
+}
+
+.folder-branch-section.is-active-folder .folder-branch-head::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -18px;
+  width: 2px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+
+.folder-branch-head:hover,
+.folder-branch-head:focus-visible {
+  background: rgba(28, 28, 30, 0.045);
+  color: #18181b;
+}
+
+.folder-branch-name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 530;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-branch-count {
+  flex: 0 0 auto;
+  color: #a8a29e;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.folder-branch-actions {
+  position: absolute;
+  top: 50%;
+  right: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 100ms ease;
+}
+
+.folder-branch-head-wrap:hover .folder-branch-actions,
+.folder-branch-head-wrap:focus-within .folder-branch-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.folder-branch-actions .tooltip-anchor {
+  display: inline-flex;
+}
+
+.folder-branch-actions button {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 7px;
+  padding: 0;
+  background: transparent;
+  color: #77737a;
+}
+
+.folder-branch-actions button:hover,
+.folder-branch-actions button:focus-visible {
+  background: rgba(28, 28, 30, 0.07);
+  color: #27272a;
+}
+
+.folder-branch-head--renaming {
+  padding-right: 8px;
+  background: rgba(28, 28, 30, 0.045);
+  color: #52525b;
+}
+
+.folder-branch-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 260ms var(--ease-out);
+}
+
+.folder-branch-section.is-open .folder-branch-body {
+  grid-template-rows: 1fr;
+}
+
+.folder-branch-fold {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.folder-branch-tree {
+  position: relative;
+  min-width: 0;
+  padding: 5px 0;
+  box-sizing: border-box;
+}
+
+.folder-branch-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.folder-branch-section.is-open .folder-branch-lines {
+  opacity: 1;
+  transition-delay: 80ms;
+}
+
+.folder-branch-line-base,
+.folder-branch-line-active {
+  fill: none;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.folder-branch-line-base {
+  stroke: #d4d4d8;
+}
+
+.folder-branch-line-active {
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-dasharray: 240;
+  stroke-dashoffset: 0;
+  animation: folder-branch-draw 320ms var(--ease-out) both;
+}
+
+@keyframes folder-branch-draw {
+  from { stroke-dashoffset: 240; }
+  to { stroke-dashoffset: 0; }
+}
+
+.folder-branch-tree .note-context-anchor {
+  display: block;
+  width: 100%;
+  height: var(--folder-row);
+}
+
+.folder-note-row {
+  width: 100%;
+  height: var(--folder-row);
+}
+
+.folder-note-item {
+  display: flex;
+  width: 100%;
+  height: var(--folder-row);
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 0 8px 0 var(--folder-indent);
+  background: transparent;
+  color: #77737a;
+  text-align: left;
+  transition: color 150ms ease, background-color 120ms var(--ease-out);
+}
+
+.folder-note-item > span:first-child {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 470;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-note-item:hover,
+.folder-note-item:focus-visible {
+  background: rgba(28, 28, 30, 0.045);
+  color: #27272a;
+}
+
+.folder-note-item.is-selected {
+  background: rgba(197, 243, 103, 0.18);
+  color: #1f2712;
+  font-weight: 520;
+}
+
+.folder-note-pin {
+  flex: 0 0 auto;
+  color: #7e8f57;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.folder-branch-empty {
+  padding: 3px 8px 8px 34px;
+}
+
+.folder-branch-empty button {
+  height: 29px;
+  border-radius: 8px;
+  padding: 0 9px;
+  background: transparent;
+  color: #9a9692;
+  font-size: 11px;
+  text-align: left;
+}
+
+.folder-branch-empty button:hover,
+.folder-branch-empty button:focus-visible {
+  background: rgba(28, 28, 30, 0.045);
+  color: #57534e;
+}
+
+.sidebar-root-notes-label {
+  margin-top: 8px;
+  padding: 7px 7px 5px;
+  color: var(--ink-tertiary);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.folder-library--sidebar {
+  margin-bottom: 4px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(28, 28, 30, 0.055);
+}
+
+.folder-library--list {
+  margin: 1px 2px 16px;
+  padding: 0 4px 13px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.folder-library--list .folder-library-head {
+  padding: 5px 10px 7px;
+}
+
+.folder-library--list .folder-create-row {
+  margin-right: 8px;
+  margin-left: 18px;
+}
+
+.folder-library--list .folder-branch-menu {
+  padding-left: 18px;
+}
+
+.folder-library--list .folder-branch-menu::before {
+  left: 4px;
+}
+
+.folder-library--list .folder-branch-head {
+  height: 40px;
+  padding-left: 9px;
+}
+
+.folder-library--list .folder-branch-section.is-active-folder .folder-branch-head::before {
+  left: -23px;
+}
+
+.folder-library--list .folder-branch-name {
+  font-size: 13.5px;
+}
+
+.folder-library--list .folder-note-item > span:first-child {
+  font-size: 13px;
+}
+
+@media (max-width: 700px) {
+  .folder-library--list {
+    margin: 2px 0 17px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .folder-library--list .folder-library-head {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .folder-library--list .folder-branch-head {
+    height: 42px;
+  }
+
+  .folder-library--list .folder-note-item {
+    border-radius: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .folder-branch-body,
+  .folder-branch-lines,
+  .folder-branch-line-active {
+    transition: none;
+    animation: none;
+  }
+}

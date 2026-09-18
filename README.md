@@ -21,6 +21,7 @@
 - Rich-text editing with headings, lists, highlights, links, code blocks, and tasks
 - Markdown import and export
 - Wiki-style links and backlinks
+- Local folders with branched navigation
 - Editable tables
 - Image and file attachments
 - Fast note and command search

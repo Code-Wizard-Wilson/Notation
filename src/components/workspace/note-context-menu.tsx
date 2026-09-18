@@ -1,16 +1,18 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Archive, Copy, CopyPlus, Pin, PinOff, RotateCcw, Trash2 } from "lucide-react";
+import { Archive, Copy, CopyPlus, Folder, FolderMinus, Pin, PinOff, RotateCcw, Trash2 } from "lucide-react";
 import {
   ContextMenu,
   type ContextMenuItem,
 } from "@/components/interior/context-menu";
 import { useNotesActions } from "@/hooks/use-notes-actions";
+import { useWorkspaceStore } from "@/store/workspace-store";
 import type { Note } from "@/types/note";
 
 export function NoteContextMenu({ note, children }: { note: Note; children: ReactNode }) {
-  const { togglePin, archiveNote, restoreNote, trashNote, duplicateNote, copyNoteLink } = useNotesActions();
+  const folders = useWorkspaceStore((state) => state.folders);
+  const { togglePin, archiveNote, restoreNote, trashNote, duplicateNote, moveNoteToFolder, copyNoteLink } = useNotesActions();
 
   const items: ContextMenuItem[] = [];
 
@@ -50,6 +52,27 @@ export function NoteContextMenu({ note, children }: { note: Note; children: Reac
       onSelect: () => void copyNoteLink(note.id),
     },
   );
+
+  if (!note.isDeleted && !note.isArchived && folders.length > 0) {
+    items.push({ id: "folder-divider", type: "separator" });
+    for (const folder of folders) {
+      items.push({
+        id: `folder:${folder.id}`,
+        label: `Move to · ${folder.name}`,
+        icon: <Folder size={15} />,
+        disabled: note.folderId === folder.id,
+        onSelect: () => void moveNoteToFolder(note.id, folder.id),
+      });
+    }
+    if (note.folderId) {
+      items.push({
+        id: "folder:none",
+        label: "Remove from folder",
+        icon: <FolderMinus size={15} />,
+        onSelect: () => void moveNoteToFolder(note.id, null),
+      });
+    }
+  }
 
   if (!note.isDeleted) {
     items.push(

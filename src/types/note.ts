@@ -19,6 +19,7 @@ export type Note = {
   userId: string;
   title: string;
   emoji?: string;
+  folderId?: string | null;
   content: JSONContent;
   plainTextContent: string;
   isPinned: boolean;
@@ -29,6 +30,13 @@ export type Note = {
   deletedAt: string | null;
   attachments: Attachment[];
   syncState?: "idle" | "saving" | "saved" | "error";
+};
+
+export type NoteFolder = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type NotesView = "all" | "pinned" | "archive" | "trash";
