@@ -3,13 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NEXT_DIST_DIR=.next-dev next dev --webpack",
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "NEXT_DIST_DIR=.next-dev next dev --webpack",
+    "backup:server": "node scripts/notation-backup-server.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
-    "dev:turbo": "NEXT_DIST_DIR=.next-dev next dev"
+    "dev:turbo": "node scripts/dev.mjs --turbo"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0",

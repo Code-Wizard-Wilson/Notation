@@ -169,7 +169,7 @@ export function SettingsSheet() {
           <div className="setting-row">
             <span className="local-storage-copy">
               <strong><HardDrive size={15} /> On this device</strong>
-              <small>Notes and attachments stay in this browser. Nothing is sent to a server.</small>
+              <small>Notes stay in this browser and are mirrored as Markdown to ~/Documents/Notation Data/Notes when Notation runs locally. Attachments and recovery backups stay beside them. Nothing is uploaded.</small>
             </span>
           </div>
         </section>

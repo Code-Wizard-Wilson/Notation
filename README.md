@@ -20,6 +20,7 @@
 
 - Rich-text editing with headings, lists, highlights, links, code blocks, and tasks
 - Markdown import and export
+- Automatic Markdown mirror on disk when running locally
 - Wiki-style links and backlinks
 - Local folders with branched navigation
 - Editable tables
@@ -31,9 +32,11 @@
 
 ## Local-first by design
 
-Notation runs entirely in the browser and stores notes locally with IndexedDB.
+Notation is local-first. The browser keeps the live workspace in IndexedDB. When you run Notation locally with `npm run dev`, the app also mirrors the workspace to `~/Documents/Notation Data/`.
 
-There is no account, backend, cloud database, analytics, telemetry, advertising, or remote note synchronization. UI preferences stay in localStorage.
+Each note is written as a real `.md` file under `~/Documents/Notation Data/Notes/`, preserving headings, lists, tasks, links, code blocks, tables, highlights, underline and font styling. Attachments and embedded local images are materialized under `~/Documents/Notation Data/Attachments/`. Workspace JSON and rolling backups are kept alongside the Markdown files for recovery.
+
+There is no account, cloud database, analytics, telemetry, advertising, or remote note synchronization. The local disk mirror is served only on `127.0.0.1`; nothing is uploaded. UI preferences stay in localStorage.
 
 When exporting a note to PDF, Notation may fetch an image URL that is already embedded in that note so it can be included in the generated document. Local images are stored as data URLs and require no network request.
 
