@@ -30,5 +30,5 @@ next-env.d.ts
 /playwright-report/
 
 /tmp/
-*.tmp-marker
+*.tmp
 .next-dev/

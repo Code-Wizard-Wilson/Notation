@@ -310,8 +310,12 @@ export function useNotesActions() {
     const url = new URL(window.location.href);
     url.search = "";
     url.searchParams.set("note", id);
-    await navigator.clipboard.writeText(url.toString());
-    useWorkspaceStore.getState().pushToast({ title: "Note link copied" });
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      useWorkspaceStore.getState().pushToast({ title: "Note link copied" });
+    } catch {
+      useWorkspaceStore.getState().pushToast({ title: "Could not copy link", tone: "error" });
+    }
   }, []);
 
   return {

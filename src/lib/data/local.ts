@@ -1,6 +1,6 @@
 "use client";
 
-import { LOCAL_NOTES_KEY } from "@/lib/constants";
+import { LOCAL_FOLDERS_KEY, LOCAL_NOTES_KEY } from "@/lib/constants";
 import type { Note, NoteFolder } from "@/types/note";
 
 const DB_NAME = "notation-local";
@@ -38,14 +38,16 @@ function openDatabase() {
 
 function readIndexedRecord<T>(key: string) {
   return new Promise<T | null>(async (resolve, reject) => {
+    let db: IDBDatabase | null = null;
     try {
-      const db = await openDatabase();
+      db = await openDatabase();
       const transaction = db.transaction(STORE_NAME, "readonly");
       const request = transaction.objectStore(STORE_NAME).get(key);
       request.onerror = () => reject(request.error ?? new Error("Could not read local workspace data."));
       request.onsuccess = () => resolve((request.result as T | undefined) ?? null);
-      transaction.oncomplete = () => db.close();
+      transaction.oncomplete = () => db?.close();
     } catch (error) {
+      db?.close();
       reject(error);
     }
   });
@@ -53,13 +55,28 @@ function readIndexedRecord<T>(key: string) {
 
 async function writeIndexedRecord<T>(key: string, value: T) {
   const db = await openDatabase();
-  await new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, "readwrite");
-    transaction.objectStore(STORE_NAME).put(value, key);
-    transaction.onerror = () => reject(transaction.error ?? new Error("Could not save local workspace data."));
-    transaction.oncomplete = () => resolve();
-  });
-  db.close();
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, "readwrite");
+      transaction.objectStore(STORE_NAME).put(value, key);
+      transaction.onerror = () => reject(transaction.error ?? new Error("Could not save local workspace data."));
+      transaction.oncomplete = () => resolve();
+    });
+  } finally {
+    db.close();
+  }
+}
+
+function isPlainNoteLike(value: unknown): value is Note {
+  if (!value || typeof value !== "object") return false;
+  const note = value as Partial<Note>;
+  return typeof note.id === "string" && typeof note.title === "string" && note.content != null;
+}
+
+function isPlainFolderLike(value: unknown): value is NoteFolder {
+  if (!value || typeof value !== "object") return false;
+  const folder = value as Partial<NoteFolder>;
+  return typeof folder.id === "string" && typeof folder.name === "string";
 }
 
 async function fetchPcWorkspace() {
@@ -75,6 +92,7 @@ async function fetchPcWorkspace() {
     if (!response.ok) return null;
     const payload = (await response.json()) as Partial<PcWorkspaceBackup>;
     if (!Array.isArray(payload.notes) || !Array.isArray(payload.folders)) return null;
+    if (!payload.notes.every(isPlainNoteLike) || !payload.folders.every(isPlainFolderLike)) return null;
     return {
       version: 1,
       savedAt: typeof payload.savedAt === "string" ? payload.savedAt : new Date(0).toISOString(),
@@ -89,20 +107,33 @@ async function fetchPcWorkspace() {
 }
 
 function readPcWorkspace() {
-  if (!pcWorkspaceRead) pcWorkspaceRead = fetchPcWorkspace();
+  if (!pcWorkspaceRead) {
+    pcWorkspaceRead = fetchPcWorkspace().then((result) => {
+      if (!result) pcWorkspaceRead = null;
+      return result;
+    });
+  }
   return pcWorkspaceRead;
 }
+
+let pcWriteQueue: Promise<void> = Promise.resolve();
 
 function writePcWorkspace(update: { notes?: Note[]; folders?: NoteFolder[] }) {
   if (!isLocalNotationHost()) return;
 
-  void fetch(PC_BACKUP_URL, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(update),
-  }).catch(() => {
-    // IndexedDB remains the immediate fallback if the local backup process is unavailable.
-  });
+  pcWriteQueue = pcWriteQueue.then(
+    () =>
+      fetch(PC_BACKUP_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(update),
+      })
+        .then(() => undefined)
+        .catch(() => {
+          // IndexedDB remains the immediate fallback if the local backup process is unavailable.
+        }),
+    () => {},
+  );
 }
 
 export async function readLocalNotes(fallback: Note[]) {
@@ -157,8 +188,23 @@ export async function readLocalFolders() {
     }
 
     const indexed = (await readIndexedRecord<NoteFolder[]>(FOLDERS_RECORD)) ?? [];
-    writePcWorkspace({ folders: indexed });
-    return indexed;
+    if (indexed.length) {
+      writePcWorkspace({ folders: indexed });
+      return indexed;
+    }
+
+    try {
+      const legacy = window.localStorage.getItem(LOCAL_FOLDERS_KEY);
+      const parsed = legacy ? (JSON.parse(legacy) as NoteFolder[]) : [];
+      if (parsed.length) {
+        await writeIndexedRecord(FOLDERS_RECORD, parsed);
+        writePcWorkspace({ folders: parsed });
+        window.localStorage.removeItem(LOCAL_FOLDERS_KEY);
+        return parsed;
+      }
+    } catch {}
+
+    return [];
   } catch {
     return [];
   }
@@ -189,8 +235,18 @@ export function writeLocalFolders(folders: NoteFolder[]) {
 
   writePcWorkspace({ folders });
 
-  if (!window.indexedDB) return;
-  void writeIndexedRecord(FOLDERS_RECORD, folders).catch(() => {});
+  if (window.indexedDB) {
+    void writeIndexedRecord(FOLDERS_RECORD, folders).catch(() => {
+      try {
+        window.localStorage.setItem(LOCAL_FOLDERS_KEY, JSON.stringify(folders));
+      } catch {}
+    });
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(LOCAL_FOLDERS_KEY, JSON.stringify(folders));
+  } catch {}
 }
 
 export function fileToDataUrl(file: File) {

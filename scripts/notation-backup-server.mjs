@@ -418,10 +418,13 @@ function persist() {
   syncMarkdownFiles();
 }
 
-const ALLOWED_ORIGINS = new Set([
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-]);
+const ALLOWED_ORIGINS = new Set(
+  (process.env.NOTATION_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean),
+  ["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3210", "http://127.0.0.1:3210"],
+);
 
 function cors(req, res) {
   const origin = req.headers.origin;
@@ -473,13 +476,27 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.method === "POST" && req.url === "/workspace") {
+    const contentLength = Number(req.headers["content-length"] || 0);
+    if (Number.isFinite(contentLength) && contentLength > 64 * 1024 * 1024) {
+      json(req, res, 413, { ok: false, error: "Payload too large" });
+      req.resume();
+      return;
+    }
+
     let body = "";
+    let aborted = false;
     req.setEncoding("utf8");
     req.on("data", (chunk) => {
+      if (aborted) return;
       body += chunk;
-      if (body.length > 512 * 1024 * 1024) req.destroy();
+      if (body.length > 64 * 1024 * 1024) {
+        aborted = true;
+        json(req, res, 413, { ok: false, error: "Payload too large" });
+        req.destroy();
+      }
     });
     req.on("end", () => {
+      if (aborted) return;
       try {
         const update = JSON.parse(body || "{}");
         if (update.notes !== undefined) {

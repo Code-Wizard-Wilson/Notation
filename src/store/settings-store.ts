@@ -45,6 +45,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
           fontSize: Number.isFinite(storedFontSize)
             ? Math.min(32, Math.max(12, Math.round(storedFontSize)))
             : defaults.fontSize,
+          spellCheck: stored.spellCheck !== false,
+          markdownShortcuts: stored.markdownShortcuts !== false,
           showHints: stored.showHints !== false,
           readOnly: stored.readOnly === true,
         });
