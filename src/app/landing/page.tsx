@@ -11,6 +11,7 @@ import {
   Highlighter,
   ImageIcon,
   Link2,
+  Play as PlayIcon,
   Search,
   Table2,
 } from "lucide-react";
@@ -19,12 +20,12 @@ import { publicPath } from "@/lib/public-path";
 import styles from "./landing.module.css";
 
 const githubUrl = "https://github.com/Code-Wizard-Wilson/Notation";
+const runUrl = `${githubUrl}#run-locally`;
 
 const reveal = {
   hidden: { opacity: 0, y: 26 },
   visible: { opacity: 1, y: 0 },
 };
-
 
 const features = [
   { icon: Command, label: "Keyboard first", copy: "Create, search and move through notes without leaving the keyboard." },
@@ -69,7 +70,6 @@ export default function LandingPage() {
           <div className={styles.navLinks}>
             <a href="#features">Features</a>
             <a href="#workflow">Workflow</a>
-            <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
           </div>
           <div className={styles.navActions}>
             <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.navCta}>
@@ -95,10 +95,14 @@ export default function LandingPage() {
             A fast, focused notes app with rich blocks, Markdown, backlinks and just enough interface to stay out of your way.
           </p>
           <div className={styles.heroActions}>
-            <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.primaryCta}>
-              <MarkGithubIcon size={19} aria-hidden="true" />
-              <span>View source on GitHub</span>
+            <a href={runUrl} target="_blank" rel="noreferrer" className={styles.primaryCta}>
+              <PlayIcon size={17} aria-hidden="true" />
+              <span>Run it locally</span>
               <ArrowUpRight size={16} />
+            </a>
+            <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.secondaryCta}>
+              <MarkGithubIcon size={17} aria-hidden="true" />
+              <span>View source</span>
             </a>
           </div>
         </motion.div>
@@ -230,7 +234,7 @@ export default function LandingPage() {
           <div className={styles.finalOrb} aria-hidden="true"><BrandMark /></div>
           <span className={styles.sectionIndex}>OPEN SOURCE</span>
           <h2>Keep the note.<br />Lose the noise.</h2>
-          <p>Clone it, change it, make it yours.</p>
+          <p>Run it locally, clone it, change it — make it yours.</p>
           <a href={githubUrl} target="_blank" rel="noreferrer" className={styles.finalButton}>
             <MarkGithubIcon size={20} aria-hidden="true" />
             <span>View source on GitHub</span>
@@ -243,6 +247,7 @@ export default function LandingPage() {
         <Link href="/" className={styles.brand}><BrandMark /><span>Notation</span></Link>
         <p>Built for notes, not dashboards.</p>
         <div>
+          <a href={runUrl} target="_blank" rel="noreferrer">Run locally</a>
           <a href={githubUrl} target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </footer>
