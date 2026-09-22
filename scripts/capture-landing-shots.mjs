@@ -13,7 +13,7 @@ async function fresh() {
     colorScheme: "light",
   });
   const page = await context.newPage();
-  await page.goto(BASE + "/", { waitUntil: "networkidle" });
+  await page.goto(BASE + "/app", { waitUntil: "networkidle" });
   await page.evaluate(async () => {
     localStorage.clear();
     await new Promise((resolve) => {

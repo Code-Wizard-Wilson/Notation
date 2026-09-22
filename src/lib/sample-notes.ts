@@ -21,8 +21,8 @@ const productContent: JSONContent = {
       type: "taskList",
       content: [
         { type: "taskItem", attrs: { checked: true }, content: [{ type: "paragraph", content: [{ type: "text", text: "Build editor prototype" }] }] },
-        { type: "taskItem", attrs: { checked: false }, content: [{ type: "paragraph", content: [{ type: "text", text: "Add file uploads" }] }] },
-        { type: "taskItem", attrs: { checked: false }, content: [{ type: "paragraph", content: [{ type: "text", text: "Test mobile navigation" }] }] },
+        { type: "taskItem", attrs: { checked: true }, content: [{ type: "paragraph", content: [{ type: "text", text: "Add file uploads" }] }] },
+        { type: "taskItem", attrs: { checked: true }, content: [{ type: "paragraph", content: [{ type: "text", text: "Test mobile navigation" }] }] },
       ],
     },
   ],

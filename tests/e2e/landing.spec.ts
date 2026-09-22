@@ -7,7 +7,7 @@ for (const viewport of [
 ]) {
   test(`landing stays clean at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/landing");
+    await page.goto("/");
 
     await expect(page.getByRole("heading", { level: 1, name: /Write before the thought disappears/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /View source on GitHub/i }).first()).toBeVisible();

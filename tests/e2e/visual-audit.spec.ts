@@ -10,7 +10,7 @@ for (const viewport of [
 ]) {
   test(`visual audit ${viewport.width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/app");
     await page.evaluate(() => localStorage.clear());
     await page.reload();
     await page.locator(".workspace-shell").waitFor();
@@ -20,7 +20,7 @@ for (const viewport of [
 
 test("visual audit command palette", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
+  await page.goto("/app");
   await page.keyboard.press("Meta+k");
   await page.getByRole("combobox", { name: "Search notes or run a command" }).fill("product");
   await page.screenshot({ path: testInfo.outputPath("notation-command.png") });
@@ -29,7 +29,7 @@ test("visual audit command palette", async ({ page }, testInfo) => {
 
 test("desktop sidebar keeps one icon grid while collapsing", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
+  await page.goto("/app");
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 
@@ -103,7 +103,7 @@ test("loading skeleton mirrors the responsive workspace layout", async ({ browse
     viewport: { width: 1440, height: 900 },
   });
   const desktopPage = await desktop.newPage();
-  await desktopPage.goto("/");
+  await desktopPage.goto("/app");
   await expect(desktopPage.locator(".skeleton-navigation")).toBeVisible();
   await expect(desktopPage.locator(".skeleton-list-pane")).toBeHidden();
   await expect(desktopPage.locator(".skeleton-editor-pane")).toBeVisible();
@@ -120,7 +120,7 @@ test("loading skeleton mirrors the responsive workspace layout", async ({ browse
     viewport: { width: 1024, height: 768 },
   });
   const tabletPage = await tablet.newPage();
-  await tabletPage.goto("/");
+  await tabletPage.goto("/app");
   await expect(tabletPage.locator(".skeleton-navigation")).toBeHidden();
   await expect(tabletPage.locator(".skeleton-tablet-rail")).toBeVisible();
   await expect(tabletPage.locator(".skeleton-list-pane")).toBeVisible();
@@ -134,7 +134,7 @@ test("loading skeleton mirrors the responsive workspace layout", async ({ browse
     viewport: { width: 430, height: 932 },
   });
   const mobilePage = await mobile.newPage();
-  await mobilePage.goto("/");
+  await mobilePage.goto("/app");
   await expect(mobilePage.locator(".skeleton-navigation")).toBeHidden();
   await expect(mobilePage.locator(".skeleton-tablet-rail")).toBeHidden();
   await expect(mobilePage.locator(".skeleton-list-pane")).toBeVisible();

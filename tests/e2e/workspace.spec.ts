@@ -7,7 +7,7 @@ const pixel = Buffer.from(
 );
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/app");
   await page.evaluate(async () => {
     localStorage.clear();
     await new Promise<void>((resolve) => {

@@ -49,7 +49,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000` for the landing page. The notes app lives at `http://localhost:3000/app`.
 
 ## Build and test
 
