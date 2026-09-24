@@ -158,7 +158,7 @@ export default function LandingPage() {
           </div>
           <p>One compact palette for notes and actions. Fewer panels, fewer context switches.</p>
           <div className={styles.shotFrame}>
-            <Image src={publicPath("/landing/search-custom.png")} alt="Notation command palette" width={1440} height={900} className={styles.searchShot} />
+            <Image src={publicPath("/landing/search-custom.png")} alt="Notation command palette" width={1600} height={999} className={styles.searchShot} />
           </div>
         </motion.article>
 
