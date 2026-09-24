@@ -458,7 +458,7 @@ export function ContextMenu({
               transformOrigin: placement.transformOrigin,
               zIndex: 60,
             }}
-            className="overflow-y-auto overscroll-contain rounded-[14px] border border-stone-200 bg-white p-[5px] shadow-[0_1px_2px_rgba(28,25,23,0.06),0_16px_36px_-18px_rgba(28,25,23,0.5)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
+            className="overflow-y-auto overscroll-contain rounded-[14px] border border-stone-200 bg-white p-1 shadow-[0_1px_2px_rgba(28,25,23,0.06),0_16px_36px_-18px_rgba(28,25,23,0.5)] outline-none dark:border-white/[0.16] dark:bg-[#1D1D1A] dark:shadow-[0_2px_12px_rgba(0,0,0,0.6)]"
           >
             {items.map((item, index) =>
               item.type === "separator" ? (

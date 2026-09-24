@@ -57,14 +57,14 @@ button:active:not(:disabled) {
 @media (min-width: 981px) {
   .workspace-shell,
   .workspace-skeleton {
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 8px;
   }
 
   .desktop-navigation {
     width: 224px;
     min-width: 68px;
-    padding: 14px 12px;
+    padding: 16px 12px;
     border: 1px solid rgba(60, 60, 67, 0.08);
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.72);
@@ -115,7 +115,6 @@ button:active:not(:disabled) {
 .image-toolbar {
   border: 1px solid #e7e5e4;
   border-radius: 11px;
-  padding: 5px;
   background: #fff;
   box-shadow: 0 18px 40px -24px rgba(28, 25, 23, 0.5);
 }
@@ -150,7 +149,6 @@ button:active:not(:disabled) {
   width: 160px;
   border: 1px solid #e7e5e4;
   border-radius: 14px;
-  padding: 5px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06), 0 16px 36px -18px rgba(28, 25, 23, 0.5);
   transform-origin: top left;
@@ -160,7 +158,6 @@ button:active:not(:disabled) {
 .heading-menu button {
   min-height: 32px;
   border-radius: 7px;
-  padding: 0 10px;
   color: #44403c;
   font-size: 13px;
 }
@@ -196,14 +193,14 @@ button:active:not(:disabled) {
   max-height: min(420px, 60vh);
   border: 1px solid #e7e5e4;
   border-radius: 14px;
-  padding: 5px;
+  padding: 4px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06), 0 16px 36px -18px rgba(28, 25, 23, 0.5);
 }
 
 .interior-editor-menu > p {
   margin: 0;
-  padding: 7px 10px 6px;
+  padding: 8px 8px 4px;
   color: #78716c;
   font-family: var(--font-mono);
   font-size: 9.5px;
@@ -213,7 +210,7 @@ button:active:not(:disabled) {
 .interior-editor-menu .editor-menu-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   padding: 0;
 }
 
@@ -225,7 +222,7 @@ button:active:not(:disabled) {
   min-height: 36px;
   align-items: center;
   border-radius: 9px;
-  padding: 0 10px;
+  padding: 0 8px;
   overflow: hidden;
   background: transparent;
   color: #44403c;
@@ -246,7 +243,7 @@ button:active:not(:disabled) {
   width: 100%;
   min-width: 0;
   align-items: center;
-  gap: 10px !important;
+  gap: 8px !important;
 }
 
 .editor-menu-row-content > svg {
@@ -410,7 +407,7 @@ button:active:not(:disabled) {
   min-width: 46px;
   border: 1px solid #e7e5e4;
   border-radius: 8px;
-  padding: 5px 7px;
+  padding: 4px 8px;
   background: #fafaf9;
   color: #292524;
   font-family: var(--font-mono);
@@ -445,8 +442,7 @@ button:active:not(:disabled) {
   }
 
   .desktop-navigation.is-collapsed .navigation-main {
-    gap: 5px;
-    padding-top: 18px;
+    gap: 4px;
   }
 
   .desktop-navigation.is-collapsed .navigation-main .relative.inline-flex,
@@ -473,12 +469,12 @@ button:active:not(:disabled) {
   }
 
   .desktop-navigation.is-collapsed .new-note-control {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .desktop-navigation.is-collapsed .nav-separator {
     width: 24px;
-    margin: 8px auto 9px;
+    margin: 8px auto 8px;
   }
 
   .desktop-navigation.is-collapsed .navigation-foot {
@@ -518,7 +514,7 @@ button:active:not(:disabled) {
 }
 
 .note-row-main {
-  padding-right: 14px;
+  padding-right: 16px;
 }
 
 .note-row-actions {
@@ -528,8 +524,8 @@ button:active:not(:disabled) {
   right: 7px;
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px;
+  gap: 4px;
+  padding: 4px;
   border: 1px solid rgba(60, 60, 67, 0.08);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.92);
@@ -580,7 +576,7 @@ button:active:not(:disabled) {
   grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 12px;
   border-bottom: 0;
-  padding: 0 14px;
+  padding: 0 16px;
   background: #fff;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -590,7 +586,7 @@ button:active:not(:disabled) {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 }
 
 .editor-context-copy {
@@ -646,7 +642,7 @@ button:active:not(:disabled) {
 .list-empty {
   min-height: 52vh;
   align-items: center;
-  padding: 40px 22px;
+  padding: 48px 24px;
   text-align: center;
 }
 
@@ -657,7 +653,7 @@ button:active:not(:disabled) {
   place-items: center;
   border: 1px solid #e7e5e4;
   border-radius: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
   background: #fafaf9;
   color: #78716c;
   box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
@@ -670,7 +666,7 @@ button:active:not(:disabled) {
 
 .list-empty > p:not(.micro-label) {
   max-width: 230px;
-  margin: 9px 0 18px;
+  margin: 8px 0 16px;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -720,7 +716,7 @@ button:active:not(:disabled) {
   align-items: center;
   gap: 12px;
   border-bottom: 1px solid #f0efee;
-  padding: 8px 11px;
+  padding: 8px 12px;
 }
 
 .note-details-grid > div:last-child {
@@ -763,10 +759,10 @@ button:active:not(:disabled) {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid #e7e5e4;
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 8px;
   background: #fff;
 }
 
@@ -812,7 +808,7 @@ button:active:not(:disabled) {
 
 .note-details-actions {
   display: grid;
-  gap: 3px;
+  gap: 4px;
 }
 
 .note-details-actions button {
@@ -820,9 +816,9 @@ button:active:not(:disabled) {
   width: 100%;
   min-height: 36px;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   border-radius: 9px;
-  padding: 0 10px;
+  padding: 0 8px;
   color: #57534e;
   font-size: 12px;
   text-align: left;
@@ -856,7 +852,7 @@ button:active:not(:disabled) {
   min-height: 44px;
   border: 1px solid #e7e5e4;
   border-radius: 12px;
-  padding: 5px 6px 5px 13px;
+  padding: 4px 4px 4px 12px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 12px 32px -18px rgba(28, 25, 23, 0.46);
   backdrop-filter: blur(12px);
@@ -865,7 +861,7 @@ button:active:not(:disabled) {
 
 .toast-action {
   height: 30px;
-  padding: 0 10px;
+  padding: 0 8px;
   background: #f5f5f4;
   color: #292524;
   font-weight: 540;
@@ -910,11 +906,11 @@ button:active:not(:disabled) {
 /* Compact desktop list proportions. */
 @media (min-width: 1100px) {
   .notes-list-head {
-    padding: 18px 18px 13px 20px;
+    padding: 16px 16px 12px 16px;
   }
 
   .notes-list-head .micro-label {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .notes-list-head h1 {
@@ -922,19 +918,19 @@ button:active:not(:disabled) {
   }
 
   .notes-count {
-    padding: 8px 20px 7px;
+    padding: 8px 16px 8px;
   }
 
   .notes-scroll {
-    padding: 7px 8px 28px;
+    padding: 8px 8px 24px;
   }
 
   .note-group + .note-group {
-    margin-top: 19px;
+    margin-top: 16px;
   }
 
   .note-group-label {
-    padding: 6px 12px 5px;
+    padding: 4px 12px 4px;
   }
 
   .note-row {
@@ -942,8 +938,7 @@ button:active:not(:disabled) {
   }
 
   .note-row-main {
-    gap: 3px;
-    padding: 10px 12px;
+    padding: 8px 12px;
   }
 
   .note-row-title {
@@ -993,7 +988,7 @@ button:active:not(:disabled) {
     min-height: 26px;
     align-items: center;
     justify-content: space-between;
-    padding: 0 7px 6px;
+    padding: 0 8px 4px;
     color: var(--ink-tertiary);
     font-family: var(--font-mono);
     font-size: 8.5px;
@@ -1011,7 +1006,7 @@ button:active:not(:disabled) {
     min-height: 0;
     flex: 1;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: none;
@@ -1035,9 +1030,9 @@ button:active:not(:disabled) {
     height: 34px;
     min-width: 0;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
     border-radius: 9px;
-    padding: 0 60px 0 9px;
+    padding: 0 64px 0 8px;
     background: transparent;
     color: #3f3f46;
     text-align: left;
@@ -1141,9 +1136,9 @@ button:active:not(:disabled) {
   .sidebar-view-switcher {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 3px;
+    gap: 4px;
     border-top: 1px solid var(--hairline);
-    padding-top: 9px;
+    padding-top: 8px;
   }
 
   .sidebar-view-switcher .relative.inline-flex,
@@ -1204,7 +1199,7 @@ button:active:not(:disabled) {
 
 .editor-footnote {
   border-top: 0;
-  margin-top: 28px;
+  margin-top: 32px;
   padding-top: 0;
 }
 
@@ -1266,8 +1261,8 @@ button:active:not(:disabled) {
 }
 
 .editor-status-words {
-  gap: 5px;
-  padding: 0 9px;
+  gap: 4px;
+  padding: 0 8px;
 }
 
 .editor-status-words strong {
@@ -1279,8 +1274,8 @@ button:active:not(:disabled) {
 }
 
 .editor-status-hint {
-  gap: 5px;
-  padding: 0 6px 0 9px;
+  gap: 4px;
+  padding: 0 4px 0 8px;
 }
 
 .editor-status-hint kbd {
@@ -1338,14 +1333,14 @@ button:active:not(:disabled) {
 }
 
 .font-family-setting {
-  gap: 10px;
+  gap: 8px;
 }
 
 .font-family-grid {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+  gap: 8px;
 }
 
 .font-family-option {
@@ -1353,10 +1348,10 @@ button:active:not(:disabled) {
   min-height: 72px;
   align-content: center;
   justify-items: start;
-  gap: 5px;
+  gap: 4px;
   border: 1px solid #e7e5e4;
   border-radius: 11px;
-  padding: 10px 11px;
+  padding: 8px 12px;
   background: #fff;
   color: #78716c;
   text-align: left;
@@ -1426,18 +1421,18 @@ button:active:not(:disabled) {
 
 .note-details-grid > div {
   min-height: 50px;
-  padding: 9px 12px;
+  padding: 8px 12px;
 }
 
 .note-details-actions {
   display: grid;
-  gap: 3px;
+  gap: 4px;
 }
 
 .note-details-actions button {
   min-height: 38px;
   border-radius: 9px;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 
 .note-details-actions button:hover {
@@ -1612,12 +1607,12 @@ button:active:not(:disabled) {
 
 .emoji-picker {
   display: grid;
-  gap: 11px;
+  gap: 12px;
 }
 
 .emoji-picker-head {
   display: grid;
-  gap: 2px;
+  gap: 4px;
 }
 
 .emoji-picker-head strong {
@@ -1661,9 +1656,9 @@ button:active:not(:disabled) {
 .emoji-picker-custom {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 6px;
+  gap: 4px;
   border-top: 1px solid #eeecea;
-  padding-top: 10px;
+  padding-top: 8px;
 }
 
 .emoji-picker-custom input {
@@ -1671,7 +1666,7 @@ button:active:not(:disabled) {
   height: 34px;
   border: 1px solid #e5e3e1;
   border-radius: 9px;
-  padding: 0 10px;
+  padding: 0 8px;
   background: #fafaf9;
   color: #292524;
   font-family: var(--font-body);
@@ -1687,7 +1682,7 @@ button:active:not(:disabled) {
 .emoji-picker-custom button {
   height: 34px;
   border-radius: 9px;
-  padding: 0 11px;
+  padding: 0 12px;
   background: #1f1f21;
   color: #fff;
   font-size: 11px;
@@ -1727,7 +1722,7 @@ button:active:not(:disabled) {
 
 .turn-into-label {
   display: block;
-  padding: 6px 10px 4px;
+  padding: 4px 8px 4px;
   color: #a8a29e;
   font-size: 9px;
   font-weight: 650;
@@ -1737,13 +1732,13 @@ button:active:not(:disabled) {
 .turn-into-separator {
   display: block;
   height: 1px;
-  margin: 4px 5px;
+  margin: 4px;
   background: #eceae7;
 }
 
 .editor-mini-toolbar .editor-text-action {
   min-width: 0;
-  padding: 0 10px;
+  padding: 0 8px;
   font-size: 11.5px;
   font-weight: 520;
   transition: background-color 120ms var(--ease-out), color 120ms var(--ease-out), border-color 120ms var(--ease-out);
@@ -1800,13 +1795,13 @@ button:active:not(:disabled) {
 
 /* Trash actions: explicit per-note deletion and bulk empty. */
 .editor-mini-toolbar .editor-actions {
-  gap: 7px;
+  gap: 8px;
 }
 
 .sidebar-notes-head-actions {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .trash-delete-all {
@@ -1845,7 +1840,7 @@ button:active:not(:disabled) {
 }
 
 .sidebar-note-item.is-renaming {
-  padding: 0 7px;
+  padding: 0 8px;
 }
 
 .sidebar-note-rename-input {
@@ -1854,7 +1849,7 @@ button:active:not(:disabled) {
   height: 28px;
   border: 0 !important;
   border-radius: 6px;
-  padding: 0 2px;
+  padding: 0 4px;
   background: transparent !important;
   color: var(--ink);
   font-family: var(--font-body);
@@ -2034,7 +2029,7 @@ button:active:not(:disabled) {
 }
 
 .is-read-only-status {
-  gap: 6px;
+  gap: 4px;
 }
 
 .is-read-only-status svg {
@@ -2092,7 +2087,7 @@ button:active:not(:disabled) {
   .desktop-navigation.is-collapsed {
     width: 64px;
     min-width: 64px;
-    padding: 12px 11px 12px;
+    padding: 12px;
     border: 0;
     border-right: 1px solid #ececea;
     border-radius: 0;
@@ -2108,7 +2103,6 @@ button:active:not(:disabled) {
 
   .desktop-navigation.is-collapsed .navigation-main {
     gap: 4px;
-    padding-top: 18px;
   }
 
   .desktop-navigation.is-collapsed .navigation-main > .tooltip-anchor,
@@ -2299,7 +2293,7 @@ button:active:not(:disabled) {
   .desktop-navigation:not(.is-collapsed) .navigation-main,
   .desktop-navigation.is-collapsed .navigation-main {
     gap: 4px;
-    padding-top: 20px;
+    padding-top: 16px;
   }
 
   .desktop-navigation .navigation-main > .tooltip-anchor,
@@ -2319,7 +2313,7 @@ button:active:not(:disabled) {
   .desktop-navigation .nav-entry {
     height: var(--rail-col);
     min-height: var(--rail-col);
-    gap: 10px;
+    gap: 8px;
     border-radius: 10px;
     padding-right: var(--rail-icon-inset);
     padding-left: var(--rail-icon-inset);
@@ -2398,7 +2392,7 @@ button:active:not(:disabled) {
   /* Expanded account control: avatar centred on the icon column. */
   .desktop-navigation .account-control {
     height: 44px;
-    gap: 10px;
+    gap: 8px;
     padding: 0 calc((var(--rail-col) - 28px) / 2);
     border-radius: 10px;
   }
@@ -2495,7 +2489,7 @@ button:active:not(:disabled) {
 
 .share-popover {
   width: 232px;
-  padding: 5px !important;
+  padding: 4px !important;
   border-radius: 12px !important;
 }
 
@@ -2505,7 +2499,7 @@ button:active:not(:disabled) {
 }
 
 .share-menu-head {
-  padding: 6px 9px 5px;
+  padding: 4px 8px 4px;
   color: #a8a29e;
   font-size: 9px;
   font-weight: 650;
@@ -2516,12 +2510,12 @@ button:active:not(:disabled) {
   display: grid;
   min-height: 46px;
   grid-template-columns: 26px minmax(0, 1fr);
-  gap: 7px;
+  gap: 8px;
   align-items: center;
   width: 100%;
   border: 0;
   border-radius: 8px;
-  padding: 5px 8px;
+  padding: 4px 8px;
   background: transparent;
   color: #292524;
   text-align: left;
@@ -2624,7 +2618,7 @@ button:active:not(:disabled) {
   display: grid;
   border: 1px solid #e7e5e4;
   border-radius: 12px;
-  padding: 5px;
+  padding: 4px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(28, 25, 23, 0.06), 0 18px 38px -20px rgba(28, 25, 23, 0.45);
   transform-origin: top left;
@@ -2637,7 +2631,7 @@ button:active:not(:disabled) {
 }
 
 .style-submenu-label {
-  padding: 5px 7px 6px;
+  padding: 4px 8px 4px;
   color: #a8a29e;
   font-family: var(--font-mono);
   font-size: 8.5px;
@@ -2650,9 +2644,9 @@ button:active:not(:disabled) {
   min-height: 34px;
   grid-template-columns: 32px minmax(0, 1fr) 16px;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   border-radius: 7px;
-  padding: 2px 7px 2px 4px;
+  padding: 4px 8px 4px 4px;
   background: transparent;
   color: #44403c;
   text-align: left;
@@ -2695,8 +2689,8 @@ button:active:not(:disabled) {
 .highlight-swatches {
   display: grid;
   grid-template-columns: repeat(4, 28px);
-  gap: 5px;
-  padding: 2px 5px 6px;
+  gap: 4px;
+  padding: 4px;
 }
 
 .bubble-toolbar .highlight-swatch {
@@ -2746,11 +2740,11 @@ button:active:not(:disabled) {
   width: 320px;
   max-height: min(390px, 58vh);
   border-radius: 13px;
-  padding: 5px;
+  padding: 4px;
 }
 
 .interior-editor-menu > p {
-  padding: 6px 8px 5px;
+  padding: 4px 8px 4px;
   font-size: 8.5px;
   letter-spacing: 0.07em;
 }
@@ -2774,7 +2768,7 @@ button:active:not(:disabled) {
 }
 
 .editor-menu-group:first-child {
-  padding-top: 3px;
+  padding-top: 4px;
 }
 
 .interior-editor-menu .editor-menu-list button {
@@ -2845,15 +2839,15 @@ button:active:not(:disabled) {
 /* Backlinks stay out of the writing flow until they actually exist. */
 .backlinks-panel {
   width: 100%;
-  margin-top: 52px;
+  margin-top: 48px;
   padding-bottom: 8px;
 }
 
 .backlinks-heading {
   display: flex;
   align-items: center;
-  gap: 7px;
-  margin-bottom: 7px;
+  gap: 8px;
+  margin-bottom: 8px;
   padding: 0 4px;
   color: #a8a29e;
   font-family: var(--font-mono);
@@ -2875,7 +2869,7 @@ button:active:not(:disabled) {
 
 .backlinks-list {
   display: grid;
-  gap: 2px;
+  gap: 4px;
 }
 
 .backlink-row {
@@ -2883,9 +2877,9 @@ button:active:not(:disabled) {
   min-height: 44px;
   grid-template-columns: 28px minmax(0, 1fr);
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   border-radius: 9px;
-  padding: 5px 7px;
+  padding: 4px 8px;
   background: transparent;
   color: #292524;
   text-align: left;
@@ -2915,7 +2909,7 @@ button:active:not(:disabled) {
 .backlink-copy {
   display: grid;
   min-width: 0;
-  gap: 2px;
+  gap: 4px;
 }
 
 .backlink-copy strong,
@@ -2950,7 +2944,7 @@ button:active:not(:disabled) {
 }
 
 .interior-editor-menu > p {
-  padding: 5px 7px 4px;
+  padding: 4px 8px 4px;
   color: #a8a29e;
   font-size: 8px;
 }
@@ -2961,7 +2955,7 @@ button:active:not(:disabled) {
 }
 
 .editor-menu-group {
-  padding: 7px 7px 3px;
+  padding: 8px 8px 4px;
   font-size: 7.5px;
   letter-spacing: 0.07em;
 }
@@ -2970,7 +2964,7 @@ button:active:not(:disabled) {
   height: 36px;
   min-height: 36px;
   border-radius: 7px;
-  padding: 0 7px;
+  padding: 0 8px;
 }
 
 .editor-menu-active { border-radius: 7px; }
@@ -2979,7 +2973,7 @@ button:active:not(:disabled) {
   display: grid !important;
   grid-template-columns: 22px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 7px !important;
+  gap: 8px !important;
 }
 
 .editor-menu-icon {
@@ -2994,7 +2988,7 @@ button:active:not(:disabled) {
   display: flex;
   min-width: 0;
   align-items: baseline;
-  gap: 6px;
+  gap: 4px;
 }
 
 .interior-editor-menu .editor-menu-row-content strong {
@@ -3036,13 +3030,13 @@ button:active:not(:disabled) {
 
 .backlinks-panel {
   margin-top: 32px;
-  padding-bottom: 2px;
+  padding-bottom: 4px;
 }
 
 .backlinks-heading {
-  gap: 6px;
+  gap: 4px;
   margin-bottom: 4px;
-  padding: 0 3px;
+  padding: 0 4px;
   font-size: 8px;
 }
 
@@ -3060,7 +3054,7 @@ button:active:not(:disabled) {
   grid-template-columns: 24px minmax(0, 1fr);
   gap: 8px;
   border-radius: 7px;
-  padding: 4px 5px;
+  padding: 4px;
 }
 
 .backlink-emoji {
@@ -3127,9 +3121,9 @@ button:active:not(:disabled) {
   min-height: 32px;
   grid-template-columns: 20px minmax(0,1fr);
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   border-radius: 7px;
-  padding: 0 7px;
+  padding: 0 8px;
   background: transparent;
   color: #44403c;
   font-size: 11.5px;
@@ -3144,7 +3138,7 @@ button:active:not(:disabled) {
 }
 
 .block-action-label {
-  padding: 7px 7px 3px;
+  padding: 8px 8px 4px;
   color: #a8a29e;
   font-family: var(--font-mono);
   font-size: 7.5px;
@@ -3153,7 +3147,7 @@ button:active:not(:disabled) {
 
 .block-action-separator {
   height: 1px;
-  margin: 3px 5px;
+  margin: 4px;
   background: #eeecea;
 }
 
@@ -3198,8 +3192,8 @@ button:active:not(:disabled) {
   width: auto;
   min-width: 78px;
   height: 32px;
-  gap: 3px;
-  padding: 0 7px 0 9px;
+  gap: 4px;
+  padding: 0 8px;
   white-space: nowrap;
 }
 
@@ -3310,7 +3304,7 @@ button:active:not(:disabled) {
   }
 
   .notes-list-head {
-    padding: 18px 16px 13px 17px;
+    padding: 16px 16px 12px 16px;
   }
 
   .notes-list-head h1 {
@@ -3318,18 +3312,13 @@ button:active:not(:disabled) {
   }
 
   .notes-count {
-    padding-right: 17px;
-    padding-left: 17px;
-  }
-
-  .notes-scroll {
-    padding-right: 7px;
-    padding-left: 7px;
+    padding-right: 16px;
+    padding-left: 16px;
   }
 
   .note-row-main {
-    padding-right: 34px;
-    padding-left: 11px;
+    padding-right: 32px;
+    padding-left: 12px;
   }
 
   .editor-page {
@@ -3338,8 +3327,8 @@ button:active:not(:disabled) {
   }
 
   .editor-mini-toolbar {
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-right: 8px;
+    padding-left: 8px;
   }
 }
 
@@ -3349,8 +3338,8 @@ button:active:not(:disabled) {
   }
 
   .notes-list-head {
-    padding-right: 14px;
-    padding-left: 15px;
+    padding-right: 16px;
+    padding-left: 16px;
   }
 
   .notes-list-head h1 {
@@ -3358,8 +3347,8 @@ button:active:not(:disabled) {
   }
 
   .notes-count {
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 16px;
+    padding-left: 16px;
   }
 
   .note-row-title {
@@ -3417,7 +3406,7 @@ button:active:not(:disabled) {
   height: 38px;
   border-right: 1px solid #eceae7;
   border-bottom: 1px solid #eceae7;
-  padding: 7px 9px;
+  padding: 8px;
   vertical-align: top;
   text-align: left;
 }
@@ -3472,10 +3461,10 @@ button:active:not(:disabled) {
   display: flex;
   height: 34px;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   border: 1px solid #e7e5e4;
   border-radius: 10px;
-  padding: 3px;
+  padding: 4px;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 10px 28px -18px rgba(28, 25, 23, 0.42);
 }
@@ -3524,7 +3513,7 @@ button:active:not(:disabled) {
   min-height: 26px;
   align-items: center;
   justify-content: space-between;
-  padding: 0 7px 5px;
+  padding: 0 8px 4px;
   color: var(--ink-tertiary);
   font-family: var(--font-body);
   font-size: 9px;
@@ -3557,8 +3546,8 @@ button:active:not(:disabled) {
   display: flex;
   height: 34px;
   align-items: center;
-  gap: 7px;
-  margin: 0 0 2px 14px;
+  gap: 8px;
+  margin: 0 0 4px 16px;
   padding: 0 8px;
   border-radius: 9px;
   background: rgba(28, 28, 30, 0.045);
@@ -3585,8 +3574,8 @@ button:active:not(:disabled) {
 }
 
 .folder-library-empty {
-  margin-left: 14px;
-  padding: 8px 8px 9px;
+  margin-left: 16px;
+  padding: 8px;
   border-radius: 9px;
   background: transparent;
   color: #8b8783;
@@ -3605,7 +3594,7 @@ button:active:not(:disabled) {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding-left: 14px;
+  padding-left: 16px;
 }
 
 .folder-branch-menu::before {
@@ -3642,9 +3631,9 @@ button:active:not(:disabled) {
   min-width: 0;
   height: 34px;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   border-radius: 9px;
-  padding: 0 48px 0 7px;
+  padding: 0 48px 0 8px;
   background: transparent;
   color: #77737a;
   text-align: left;
@@ -3766,7 +3755,7 @@ button:active:not(:disabled) {
 .folder-branch-tree {
   position: relative;
   min-width: 0;
-  padding: 5px 0;
+  padding: 4px 0;
   box-sizing: border-box;
 }
 
@@ -3827,7 +3816,7 @@ button:active:not(:disabled) {
   height: var(--folder-row);
   min-width: 0;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   border-radius: 8px;
   padding: 0 8px 0 var(--folder-indent);
   background: transparent;
@@ -3866,13 +3855,13 @@ button:active:not(:disabled) {
 }
 
 .folder-branch-empty {
-  padding: 3px 8px 8px 34px;
+  padding: 4px 8px 8px 32px;
 }
 
 .folder-branch-empty button {
   height: 29px;
   border-radius: 8px;
-  padding: 0 9px;
+  padding: 0 8px;
   background: transparent;
   color: #9a9692;
   font-size: 11px;
@@ -3887,7 +3876,7 @@ button:active:not(:disabled) {
 
 .sidebar-root-notes-label {
   margin-top: 8px;
-  padding: 7px 7px 5px;
+  padding: 8px 8px 4px;
   color: var(--ink-tertiary);
   font-size: 9px;
   font-weight: 500;
@@ -3897,27 +3886,27 @@ button:active:not(:disabled) {
 
 .folder-library--sidebar {
   margin-bottom: 4px;
-  padding-bottom: 7px;
+  padding-bottom: 8px;
   border-bottom: 1px solid rgba(28, 28, 30, 0.055);
 }
 
 .folder-library--list {
-  margin: 1px 2px 16px;
-  padding: 0 4px 13px;
+  margin: 1px 4px 16px;
+  padding: 0 4px 12px;
   border-bottom: 1px solid var(--hairline);
 }
 
 .folder-library--list .folder-library-head {
-  padding: 5px 10px 7px;
+  padding: 4px 8px 8px;
 }
 
 .folder-library--list .folder-create-row {
   margin-right: 8px;
-  margin-left: 18px;
+  margin-left: 16px;
 }
 
 .folder-library--list .folder-branch-menu {
-  padding-left: 18px;
+  padding-left: 16px;
 }
 
 .folder-library--list .folder-branch-menu::before {
@@ -3926,7 +3915,7 @@ button:active:not(:disabled) {
 
 .folder-library--list .folder-branch-head {
   height: 40px;
-  padding-left: 9px;
+  padding-left: 8px;
 }
 
 .folder-library--list .folder-branch-section.is-active-folder .folder-branch-head::before {
@@ -3943,9 +3932,9 @@ button:active:not(:disabled) {
 
 @media (max-width: 700px) {
   .folder-library--list {
-    margin: 2px 0 17px;
-    padding-right: 5px;
-    padding-left: 5px;
+    margin: 4px 0 16px;
+    padding-right: 4px;
+    padding-left: 4px;
   }
 
   .folder-library--list .folder-library-head {
@@ -3975,8 +3964,8 @@ button:active:not(:disabled) {
 @media (min-width: 1100px) {
   .desktop-navigation:not(.is-collapsed) {
     width: 236px;
-    padding-right: 14px;
-    padding-left: 14px;
+    padding-right: 16px;
+    padding-left: 16px;
   }
 
   .desktop-navigation:not(.is-collapsed) .new-note-control {
@@ -4000,11 +3989,11 @@ button:active:not(:disabled) {
   }
 
   .desktop-navigation:not(.is-collapsed) .navigation-main {
-    padding-top: 15px;
+    padding-top: 16px;
   }
 
   .sidebar-notes {
-    margin-top: 14px;
+    margin-top: 16px;
     border-top: 0;
     padding-top: 0;
   }
@@ -4053,7 +4042,7 @@ button:active:not(:disabled) {
 
   .sidebar-notes-scroll {
     gap: 0;
-    padding: 0 2px 12px 0;
+    padding: 0 4px 12px 0;
   }
 
   .folder-library--sidebar {
@@ -4065,7 +4054,7 @@ button:active:not(:disabled) {
   .folder-library--sidebar .folder-create-row {
     height: 34px;
     margin: 0 0 16px;
-    padding: 0 8px 0 28px;
+    padding: 0 8px 0 32px;
     border-radius: 0;
     background: transparent;
     color: #71717a;
@@ -4091,7 +4080,7 @@ button:active:not(:disabled) {
 
   .folder-library--sidebar .folder-context-anchor + .folder-context-anchor,
   .folder-library--sidebar .folder-context-anchor:not(:last-child) {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
   .folder-library--sidebar .folder-branch-section {
@@ -4105,7 +4094,7 @@ button:active:not(:disabled) {
   .folder-library--sidebar .folder-branch-head {
     height: 34px;
     border-radius: 0;
-    padding: 0 48px 0 28px;
+    padding: 0 48px 0 32px;
     background: transparent !important;
     color: #27272a;
     outline: 0;
@@ -4169,7 +4158,7 @@ button:active:not(:disabled) {
   }
 
   .folder-library--sidebar .folder-branch-tree {
-    padding: 3px 0 2px;
+    padding: 4px 0 4px;
   }
 
   .folder-library--sidebar .folder-branch-lines {
@@ -4234,7 +4223,7 @@ button:active:not(:disabled) {
   }
 
   .folder-library--sidebar .folder-branch-empty {
-    padding: 1px 0 4px 44px;
+    padding: 1px 0 4px 48px;
   }
 
   .folder-library--sidebar .folder-branch-empty button {
@@ -4245,17 +4234,17 @@ button:active:not(:disabled) {
   }
 
   .folder-library--sidebar .folder-library-empty {
-    margin: 0 0 18px;
+    margin: 0 0 16px;
     border-radius: 0;
-    padding: 4px 0 4px 28px;
+    padding: 4px 0 4px 32px;
     background: transparent !important;
     color: #a1a1aa;
     font-size: 12px;
   }
 
   .sidebar-tree-section--unfiled {
-    margin-top: 18px;
-    margin-bottom: 10px;
+    margin-top: 16px;
+    margin-bottom: 8px;
   }
 
   .sidebar-tree-heading {
@@ -4263,7 +4252,7 @@ button:active:not(:disabled) {
     display: flex;
     height: 34px;
     align-items: center;
-    padding-left: 28px;
+    padding-left: 32px;
     color: #27272a;
     font-size: 14px;
     font-weight: 620;
@@ -4295,7 +4284,7 @@ button:active:not(:disabled) {
   .sidebar-unfiled-tree {
     --sidebar-tree-row: 38px;
     position: relative;
-    padding: 3px 0 2px;
+    padding: 4px 0 4px;
   }
 
   .sidebar-unfiled-trunk {
@@ -4325,7 +4314,7 @@ button:active:not(:disabled) {
   .sidebar-unfiled-row {
     position: relative;
     height: var(--sidebar-tree-row);
-    padding-left: 44px;
+    padding-left: 48px;
   }
 
   .sidebar-unfiled-elbow {
@@ -4350,7 +4339,7 @@ button:active:not(:disabled) {
     height: 100%;
     gap: 8px;
     border-radius: 0;
-    padding: 0 50px 0 0;
+    padding: 0 48px 0 0;
     background: transparent !important;
     color: #8a8a91;
     outline: 0;
@@ -4408,7 +4397,7 @@ button:active:not(:disabled) {
 
   .sidebar-view-switcher {
     border-top: 0;
-    padding-top: 2px;
+    padding-top: 4px;
   }
 
   .sidebar-view-button.is-active {
@@ -4433,7 +4422,7 @@ button:active:not(:disabled) {
 
   .folder-library--list .folder-branch-head {
     border-radius: 0;
-    padding-left: 30px;
+    padding-left: 32px;
     background: transparent !important;
     color: #27272a;
     outline: 0;
@@ -4487,7 +4476,7 @@ button:active:not(:disabled) {
     --tree-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
     position: relative;
-    padding-left: 14px;
+    padding-left: 16px;
   }
 
   .sidebar-notes-scroll:has(.folder-library--sidebar)::before {
@@ -4564,7 +4553,7 @@ button:active:not(:disabled) {
     min-height: 0;
     align-items: center;
     margin: 0;
-    padding: 9px 48px 9px 0;
+    padding: 8px 48px 8px 0;
     border: 0;
     border-radius: 0;
     background: none !important;
@@ -4620,7 +4609,7 @@ button:active:not(:disabled) {
 
   .folder-library--sidebar .folder-branch-tree {
     position: relative;
-    padding: 6px 0;
+    padding: 4px 0;
     box-sizing: border-box;
   }
 
@@ -4747,7 +4736,7 @@ button:active:not(:disabled) {
     width: 100%;
     height: auto;
     margin: 0;
-    padding: 9px 0;
+    padding: 8px 0;
     color: var(--tree-ink);
     font-size: 15px;
     font-weight: 500;
@@ -4762,7 +4751,7 @@ button:active:not(:disabled) {
 
   .sidebar-unfiled-tree {
     position: relative;
-    padding: 6px 0;
+    padding: 4px 0;
     box-sizing: border-box;
   }
 
@@ -4983,7 +4972,7 @@ button:active:not(:disabled) {
     align-items: center;
     justify-content: space-between;
     gap: 0;
-    padding-top: 6px;
+    padding-top: 4px;
   }
 
   .desktop-navigation:not(.is-collapsed) .sidebar-view-switcher .tooltip-anchor,
@@ -5019,7 +5008,7 @@ button:active:not(:disabled) {
   }
 
   .skeleton-view-switcher {
-    gap: 2px;
+    gap: 4px;
   }
 
   .skeleton-view-icon {
@@ -5085,7 +5074,7 @@ button:active:not(:disabled) {
 @media (min-width: 1100px) {
   .folder-library--sidebar .folder-note-item,
   .sidebar-unfiled-row .sidebar-note-item {
-    padding-right: 66px;
+    padding-right: 64px;
   }
 
   .folder-library--sidebar .folder-note-item > .hover-marquee,

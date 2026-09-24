@@ -264,7 +264,7 @@ export function CommandPalette({
                   {item.icon ?? <span className="size-1.5 rounded-full bg-current" />}
                 </span>
 
-                <span className="ml-3.5 flex min-w-0 flex-1 flex-col justify-center gap-[3px] overflow-hidden">
+                <span className="ml-4 flex min-w-0 flex-1 flex-col justify-center gap-1 overflow-hidden">
                   <span className="flex min-w-0 items-center gap-2">
                     <span className="min-w-0 truncate text-[14.5px] font-[560] tracking-[-0.01em] text-stone-800">{item.label}</span>
                     {item.meta ? <span className="shrink-0 text-[10.5px] font-medium text-stone-400">{item.meta}</span> : null}
@@ -297,7 +297,7 @@ export function CommandPalette({
         ) : null}
       </div>
 
-      <div className="flex h-[38px] items-center justify-between border-t border-stone-200/80 bg-white px-4.5 text-[10.5px] text-stone-400">
+      <div className="flex h-[38px] items-center justify-between border-t border-stone-200/80 bg-white px-4 text-[10.5px] text-stone-400">
         <span className="font-mono tabular-nums">{count} {count === 1 ? "result" : "results"}</span>
         <span className="flex items-center gap-3.5">
           <span className="flex items-center gap-1.5"><KeyHint>↑↓</KeyHint><span>Navigate</span></span>

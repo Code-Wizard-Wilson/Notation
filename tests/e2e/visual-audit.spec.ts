@@ -111,7 +111,7 @@ test("loading skeleton mirrors the responsive workspace layout", async ({ browse
   const desktopNav = await desktopPage.locator(".skeleton-navigation").boundingBox();
   const desktopContent = await desktopPage.locator(".skeleton-workspace-content").boundingBox();
   expect(desktopNav?.width).toBe(224);
-  expect(desktopContent?.x).toBe((desktopNav?.x ?? 0) + (desktopNav?.width ?? 0) + 10);
+  expect(desktopContent?.x).toBe((desktopNav?.x ?? 0) + (desktopNav?.width ?? 0) + 8);
   await desktop.close();
 
   const tablet = await browser.newContext({

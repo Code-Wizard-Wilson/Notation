@@ -506,14 +506,14 @@ export function Tooltip({
         aria-hidden={!open}
         className={
           side === "right"
-            ? "pointer-events-none absolute left-[calc(100%+7px)] top-1/2 z-50 flex h-0 items-center"
+            ? "pointer-events-none absolute left-[calc(100%+8px)] top-1/2 z-50 flex h-0 items-center"
             : "pointer-events-none absolute left-1/2 z-50 flex w-0 justify-center"
         }
         style={
           side === "top"
-            ? { bottom: "calc(100% + 7px)" }
+            ? { bottom: "calc(100% + 8px)" }
             : side === "bottom"
-              ? { top: "calc(100% + 7px)" }
+              ? { top: "calc(100% + 8px)" }
               : undefined
         }
       >
